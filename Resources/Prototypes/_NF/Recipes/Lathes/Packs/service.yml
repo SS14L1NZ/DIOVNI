@@ -45,3 +45,10 @@
   - SodaDispenserMachineCircuitboard
   - BiogeneratorMachineCircuitboard
   - DeepFryerMachineCircuitboard
+
+- type: latheRecipePack
+  id: TapeRecorderStatic
+  recipes:
+  - CassetteTape
+  - TapeRecorder
+
