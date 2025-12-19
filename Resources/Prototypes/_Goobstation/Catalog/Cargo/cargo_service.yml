@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+# SPDX-FileCopyrightText: 2025 Roudenn <romabond091@gmail.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: cargoProduct
+  id: RadioAdsCrateCargo
+  icon:
+    sprite: Objects/Misc/cd.rsi
+    state: icon
+  product: CrateRadioStationAds
+  cost: 3000
+  category: cargoproduct-category-name-service
+  group: market
+
+- type: cargoProduct
+  id: RadioVinylCrateCargo
+  icon:
+    sprite: _Goobstation/Objects/Misc/RadioStation/vinyls.rsi
+    state: red-vinyl-disk
+  product: CrateRadioStationVinyls
+  cost: 3000
+  category: cargoproduct-category-name-service
+  group: market
