@@ -106,7 +106,7 @@
   - type: NavMapBeacon
     defaultText: station-beacon-exped-lounge
     color: "#b8b873"
-    
+
 - type: entity
   parent: DefaultStationBeaconCargoBay
   id: DefaultStationBeaconMailRoom
@@ -114,3 +114,12 @@
   components:
   - type: NavMapBeacon
     defaultText: station-beacon-mail-room
+
+- type: entity
+  parent: DefaultStationBeacon
+  id: DefaultStationBeaconRadioStation
+  suffix: Radio Station
+  components:
+  - type: NavMapBeacon
+    defaultText: station-beacon-radio-station
+    color: "#30a314"
