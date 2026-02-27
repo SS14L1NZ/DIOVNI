@@ -57,6 +57,14 @@
       weight: 1
     - id: CdDiskSecurityPsa
       weight: 1
+    - id: JVNECdDiskCapstien
+      weight: 0.3
+    - id: JVNECdDiskNinja
+      weight: 0.3
+    - id: JVNECdDiskNextUp
+      weight: 0.5
+    - id: JVNECdDiskJNE
+      weight: 0.3
     - id: CdDiskCommanderAnnouncement
       weight: 0.2
     - id: CdDiskCommanderFigurines
@@ -75,8 +83,6 @@
       weight: 0.1
     - id: CdDiskXgOnboarding4
       weight: 0.1
-    - id: VinylDiskForgotten
-      weight: 0.05
 
 - type: entityTable
   id: RandomVinylDisk
@@ -135,14 +141,13 @@
     - id: VinylDiskWinterVivaldi
       weight: 1
     - id: VinylDiskBachCello
-<<<<<<< HEAD
-      weight: 0.6
-=======
       weight: 1
     - id: VinylDiskFloaty
       weight: 1
     - id: VinylDiskLime
       weight: 1
+    - id: VinylDiskForgotten
+      weight: 0.05
     - id: VinylDiskGetThatAntag
       weight: 1
     - id: VinylDiskLaw2
@@ -163,7 +168,6 @@
       weight: 1
     - id: VinylDiskWeAreNumberTwo
       weight: 1
->>>>>>> cd08e02a47 (Radio host plus [Bugfixes & mapping] (#5622))
 
 - type: entityTable
   id: RandomVinylSleeve
