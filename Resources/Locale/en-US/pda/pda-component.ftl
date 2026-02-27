@@ -48,6 +48,18 @@ comp-pda-ui-ringtone-button = Ringtone
 
 comp-pda-ui-ringtone-button-description = Change your PDA's ringtone
 
+comp-pda-ui-screen-color-label = Screen tint
+comp-pda-ui-screen-color-green = Worn Green
+comp-pda-ui-screen-color-amber = Amber Phosphor
+comp-pda-ui-screen-color-cyan = Cyan Tube
+comp-pda-ui-screen-color-blue = Deep Blue
+comp-pda-ui-screen-color-phosphor = Classic Phosphor
+comp-pda-ui-screen-color-olive = Military Olive
+comp-pda-ui-screen-color-teal = Cold Teal
+comp-pda-ui-screen-color-ice = Ice Mint
+comp-pda-ui-screen-color-mono = Monochrome Gray
+comp-pda-ui-screen-color-red = Rust Red
+
 comp-pda-ui-toggle-flashlight-button = Toggle Flashlight
 
 pda-bound-user-interface-music-button = Music Instrument

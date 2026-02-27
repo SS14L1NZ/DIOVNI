@@ -1,0 +1,47 @@
+light_mode unshaded;
+
+uniform highp vec3 screen_tint;
+
+highp float hash(highp vec2 p)
+{
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+highp float roundedBoxSdf(highp vec2 p, highp vec2 halfSize, highp float radius)
+{
+    highp vec2 q = abs(p) - halfSize + radius;
+    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - radius;
+}
+
+void fragment()
+{
+    highp vec4 base = texture2D(TEXTURE, UV);
+
+    highp float linePhase = (hash(vec2(floor(FRAGCOORD.y / 6.0), floor(TIME * 0.7))) - 0.5) * 1.2;
+    highp float scanline = 0.90 + 0.10 * sin(FRAGCOORD.y * 0.16 + TIME * 1.1 + linePhase);
+    highp float bandShift = hash(vec2(floor((FRAGCOORD.y + TIME * 4.0) / 9.0), 17.0));
+    scanline *= 0.95 + 0.05 * bandShift;
+
+    highp float fineNoise = hash(FRAGCOORD.xy + vec2(TIME * 35.0, TIME * 22.0)) - 0.5;
+    highp float coarseNoise = hash(floor(FRAGCOORD.xy / 5.0) + vec2(TIME * 9.0, TIME * 7.0)) - 0.5;
+    highp float noise = fineNoise * 0.25 + coarseNoise * 0.75;
+
+    highp vec2 centered = UV * 2.0 - 1.0;
+    highp float sdf = roundedBoxSdf(centered, vec2(0.97, 0.97), 0.08);
+    highp float screenMask = 1.0 - smoothstep(0.0, 0.03, sdf);
+    highp float edgeFade = smoothstep(0.10, 0.98, 1.0 - max(abs(centered.x), abs(centered.y)));
+    highp float squareVignette = 1.0 - smoothstep(-0.30, 0.03, sdf);
+    highp float edgeDarkening = smoothstep(-0.24, 0.08, sdf);
+    highp float refreshBand = exp(-abs(fract(UV.y + TIME * 0.075) - 0.5) * 20.0);
+
+    highp float alpha = (0.24 + 0.07 * edgeFade + abs(noise) * 0.03 + refreshBand * 0.015) * screenMask * base.a;
+
+    highp vec3 normalizedTint = normalize(max(screen_tint, vec3(0.001)));
+    highp vec3 glassBase = mix(vec3(0.020, 0.022, 0.020), screen_tint * 0.065, 0.55) * (0.45 + 0.55 * squareVignette);
+    highp float lineEnergy = max(scanline - 0.90, 0.0) * 2.4;
+    highp vec3 crtLineTint = normalizedTint * 0.16 * lineEnergy;
+    highp float grain = noise * 0.012;
+    highp vec3 tint = (glassBase + crtLineTint + vec3(grain) + normalizedTint * refreshBand * 0.010) * (1.0 - edgeDarkening * 0.48);
+
+    COLOR = vec4(tint, alpha);
+}

@@ -110,6 +110,16 @@
   kind: source
   path: "/Textures/Shaders/hologram.swsl"
 
+- type: shader
+  id: PdaCrtOverlay
+  kind: source
+  path: "/Textures/Shaders/pda_crt_overlay.swsl"
+
+- type: shader
+  id: PdaSoftBloom
+  kind: source
+  path: "/Textures/Shaders/pda_soft_bloom.swsl"
+
 # Monolith addition
 # Cuts out everything outside of a circle
 # Anti-aliased so the edges are smooth

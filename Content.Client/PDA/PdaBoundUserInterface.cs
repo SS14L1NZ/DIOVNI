@@ -124,6 +124,7 @@ namespace Content.Client.PDA
 
         protected override void AttachCartridgeUI(Control cartridgeUIFragment, string? title)
         {
+            _menu?.ProgramView.RemoveAllChildren();
             _menu?.ProgramView.AddChild(cartridgeUIFragment);
             _menu?.ToProgramView(title ?? Loc.GetString("comp-pda-io-program-fallback-title"));
         }

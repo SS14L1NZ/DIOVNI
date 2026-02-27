@@ -16,6 +16,7 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
     private int _frequency;
     private bool _suppressEvents;
     private int? _lastSentFrequency;
+    private int? _pendingFrequency;
 
     public PdaStationRadioProgram()
     {
@@ -24,9 +25,28 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
         FrequencyLineEdit.OnTextEntered += e => TrySendFrequency(e.Text);
         FrequencyLineEdit.OnFocusExit += e => TrySendFrequency(e.Text);
 
-        FrequencyDownButton.OnPressed += _ => OnFrequencyChanged?.Invoke(_frequency - 1);
-        FrequencyUpButton.OnPressed += _ => OnFrequencyChanged?.Invoke(_frequency + 1);
+        FrequencyDownButton.OnPressed += _ => EmitFrequencyChanged(_frequency - 1);
+        FrequencyUpButton.OnPressed += _ => EmitFrequencyChanged(_frequency + 1);
+        FrequencySlider.OnGrabbed += _ =>
+        {
+            if (_suppressEvents)
+                return;
+
+            _frequency = (int) FrequencySlider.Value;
+            FrequencyLineEdit.Text = _frequency.ToString();
+        };
         FrequencySlider.OnValueChanged += _ =>
+        {
+            if (_suppressEvents)
+                return;
+
+            _frequency = (int) FrequencySlider.Value;
+            FrequencyLineEdit.Text = _frequency.ToString();
+
+            if (!FrequencySlider.Grabbed)
+                EmitFrequencyChanged(_frequency);
+        };
+        FrequencySlider.OnReleased += _ =>
         {
             if (_suppressEvents)
                 return;
@@ -49,10 +69,35 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
     public void UpdateState(bool enabled, uint frequency, string? stationName, bool scanning, List<PdaStationRadioScanEntry> scanResults)
     {
         _suppressEvents = true;
-        _frequency = (int) frequency;
-        _lastSentFrequency = _frequency;
-        FrequencyLineEdit.Text = frequency.ToString();
-        FrequencySlider.Value = frequency;
+
+        var serverFrequency = (int) frequency;
+
+        var shouldUseServerFrequency = !FrequencySlider.Grabbed;
+
+        if (_pendingFrequency is { } pendingFrequency)
+        {
+            if (serverFrequency == pendingFrequency)
+            {
+                _pendingFrequency = null;
+            }
+            else
+            {
+                shouldUseServerFrequency = false;
+            }
+        }
+
+        if (shouldUseServerFrequency)
+        {
+            _frequency = serverFrequency;
+            _lastSentFrequency = _frequency;
+            FrequencyLineEdit.Text = _frequency.ToString();
+            FrequencySlider.SetValueWithoutEvent(_frequency);
+        }
+        else
+        {
+            _frequency = (int) FrequencySlider.Value;
+        }
+
         ToggleListeningButton.Pressed = enabled;
         ToggleListeningButton.Text = Loc.GetString(enabled
             ? "pda-program-station-radio-listening-on"
@@ -60,7 +105,7 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
 
         StationNameLabel.Text = stationName == null
             ? Loc.GetString("pda-program-station-radio-no-signal")
-            : Loc.GetString("pda-program-station-radio-current", ("name", stationName), ("frequency", frequency));
+            : Loc.GetString("pda-program-station-radio-current", ("name", stationName), ("frequency", serverFrequency));
 
         ScanButton.Text = Loc.GetString(scanning
             ? "pda-program-station-radio-scanning"
@@ -89,10 +134,20 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
 
     private void EmitFrequencyChanged(int value)
     {
-        if (_lastSentFrequency == value)
+        var clamped = Math.Clamp(value, (int) FrequencySlider.MinValue, (int) FrequencySlider.MaxValue);
+
+        if (_lastSentFrequency == clamped)
             return;
 
-        _lastSentFrequency = value;
-        OnFrequencyChanged?.Invoke(value);
+        _frequency = clamped;
+        _lastSentFrequency = clamped;
+        _pendingFrequency = clamped;
+
+        _suppressEvents = true;
+        FrequencyLineEdit.Text = clamped.ToString();
+        FrequencySlider.SetValueWithoutEvent(clamped);
+        _suppressEvents = false;
+
+        OnFrequencyChanged?.Invoke(clamped);
     }
 }

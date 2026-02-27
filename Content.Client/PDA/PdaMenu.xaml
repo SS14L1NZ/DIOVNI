@@ -70,6 +70,13 @@
                           HorizontalExpand="True"
                           MinSize="50 50"
                           Name="Settings">
+                <BoxContainer Orientation="Vertical" Margin="8 6 8 6">
+                    <Label Text="{Loc 'comp-pda-ui-screen-color-label'}" />
+                    <OptionButton Name="ScreenColorPresetButton"
+                                  Access="Public"
+                                  HorizontalExpand="True"
+                                  Margin="0 4 0 0"/>
+                </BoxContainer>
                 <pda:PdaSettingsButton Name="AccessRingtoneButton"
                                        Access="Public"
                                        Text="{Loc 'comp-pda-ui-ringtone-button'}"

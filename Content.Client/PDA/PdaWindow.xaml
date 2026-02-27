@@ -20,6 +20,20 @@
             <Control Margin="3 3">
                 <PanelContainer Name="ContentBackground" StyleClasses="PdaContentBackground"/>
                 <BoxContainer Access="Public" Name="ContentsContainer" Orientation="Vertical" StyleClasses="PdaContent"/>
+                <TextureRect Name="ScreenEffectOverlay"
+                             Access="Public"
+                             MouseFilter="Ignore"
+                             HorizontalExpand="True"
+                             VerticalExpand="True"
+                             Stretch="Scale"
+                             TexturePath="/Textures/Interface/Nano/square_black.png"/>
+                <TextureRect Name="ScreenGlowOverlay"
+                             Access="Public"
+                             MouseFilter="Ignore"
+                             HorizontalExpand="True"
+                             VerticalExpand="True"
+                             Stretch="Scale"
+                             TexturePath="/Textures/Interface/Nano/square_black.png"/>
 
             </Control>
         </Control>

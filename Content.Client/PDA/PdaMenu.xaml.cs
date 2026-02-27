@@ -48,6 +48,19 @@ namespace Content.Client.PDA
         private List<PdaStationRadioScanEntry> _stationRadioScanResults = new();
         private readonly List<(EntityUid, CartridgeComponent)> _availablePrograms = new();
         private PdaStationRadioProgram? _stationRadioProgram;
+        private readonly List<(string LocKey, Color Color)> _screenColorPresets = new()
+        {
+            ("comp-pda-ui-screen-color-green", Color.FromHex("#4B8F5C")),
+            ("comp-pda-ui-screen-color-amber", Color.FromHex("#A57F3D")),
+            ("comp-pda-ui-screen-color-cyan", Color.FromHex("#4F8E90")),
+            ("comp-pda-ui-screen-color-blue", Color.FromHex("#4A6E98")),
+            ("comp-pda-ui-screen-color-phosphor", Color.FromHex("#6F9C62")),
+            ("comp-pda-ui-screen-color-olive", Color.FromHex("#6C7D4A")),
+            ("comp-pda-ui-screen-color-teal", Color.FromHex("#4A8274")),
+            ("comp-pda-ui-screen-color-ice", Color.FromHex("#7A9B93")),
+            ("comp-pda-ui-screen-color-mono", Color.FromHex("#8A8F88")),
+            ("comp-pda-ui-screen-color-red", Color.FromHex("#8D5A57")),
+        };
 
         public event Action<EntityUid>? OnProgramItemPressed;
         public event Action<EntityUid>? OnUninstallButtonPressed;
@@ -153,6 +166,25 @@ namespace Content.Client.PDA
             {
                 _clipboard.SetText(_instructions);
             };
+
+            for (var i = 0; i < _screenColorPresets.Count; i++)
+            {
+                var preset = _screenColorPresets[i];
+                ScreenColorPresetButton.AddItem(Loc.GetString(preset.LocKey), i);
+            }
+
+            ScreenColorPresetButton.OnItemSelected += args =>
+            {
+                ScreenColorPresetButton.SelectId(args.Id);
+
+                if (!_screenColorPresets.TryGetValue(args.Id, out var preset))
+                    return;
+
+                SetScreenTint(preset.Color);
+            };
+
+            ScreenColorPresetButton.SelectId(0);
+            SetScreenTint(_screenColorPresets[0].Color);
 
 
 

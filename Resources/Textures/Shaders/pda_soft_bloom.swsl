@@ -1,0 +1,28 @@
+light_mode unshaded;
+
+uniform highp vec3 bloom_tint;
+
+highp float roundedBoxSdf(highp vec2 p, highp vec2 halfSize, highp float radius)
+{
+    highp vec2 q = abs(p) - halfSize + radius;
+    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - radius;
+}
+
+void fragment()
+{
+    highp vec4 base = texture2D(TEXTURE, UV);
+    highp vec2 centered = UV * 2.0 - 1.0;
+
+    highp float sdf = roundedBoxSdf(centered, vec2(0.97, 0.97), 0.08);
+    highp float mask = 1.0 - smoothstep(0.0, 0.05, sdf);
+
+    highp float radial = 1.0 - smoothstep(0.0, 1.05, length(centered));
+    highp float edgeGlow = smoothstep(0.42, 0.98, max(abs(centered.x), abs(centered.y)));
+    highp float halo = 1.0 - smoothstep(0.01, 0.26, abs(sdf));
+
+    highp vec3 normalizedTint = normalize(max(bloom_tint, vec3(0.001)));
+    highp float glow = (radial * 0.42 + edgeGlow * 0.34 + halo * 0.24) * 0.86;
+    highp vec3 color = normalizedTint * 0.55 * glow;
+
+    COLOR = vec4(color, glow * mask * base.a);
+}
