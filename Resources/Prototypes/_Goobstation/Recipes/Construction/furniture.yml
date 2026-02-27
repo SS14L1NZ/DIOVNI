@@ -9,6 +9,9 @@
   id: CdRack
   graph: CdRackGraph
   targetNode: CdRackNode
+  icon:
+    sprite: _Goobstation/Structures/Furniture/cdrack.rsi
+    state: base
   category: construction-category-furniture
   objectType: Structure
   placementMode: SnapgridCenter

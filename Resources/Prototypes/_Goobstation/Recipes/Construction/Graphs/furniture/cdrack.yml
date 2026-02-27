@@ -4,6 +4,7 @@
 
 - type: constructionGraph
   id: CdRackGraph
+  start: start
   graph:
     - node: start
       edges:

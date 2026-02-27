@@ -143,6 +143,10 @@
       path: /Audio/_Goobstation/RadioStation/music/goonstation/distant_star.ogg
 
 - type: entity
+  id: VinylDiskFloaty
+  parent: VinylDiskLightBlue
+
+- type: entity
   name: "vinyl disk: banana"
   description: A vinyl disk contains the clowns favorite music!
   id: VinylDiskBanana
@@ -227,6 +231,10 @@
   - type: Vinyl
     song:
       path: /Audio/_Goobstation/RadioStation/music/LateNightRadio.ogg
+
+- type: entity
+  id: VinylDiskLime
+  parent: VinylDiskGreen
 
 - type: entity
   name: "vinyl disk: adventure 3"
