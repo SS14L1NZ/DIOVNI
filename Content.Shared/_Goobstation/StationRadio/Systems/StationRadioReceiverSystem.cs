@@ -63,6 +63,12 @@ public sealed class StationRadioReceiverSystem : EntitySystem
                 continue;
             }
 
+            if (!_power.IsPowered(uid) || !comp.Active)
+            {
+                comp.NextResync = _timing.CurTime + ResyncInterval;
+                continue;
+            }
+
             var elapsed = Math.Max(0f, (float) (_timing.CurTime - startedAt).TotalSeconds);
             _audio.SetPlaybackPosition(comp.SoundEntity, elapsed);
             comp.NextResync = _timing.CurTime + ResyncInterval;
@@ -96,8 +102,19 @@ public sealed class StationRadioReceiverSystem : EntitySystem
         if (!args.Actor.Valid)
             return;
 
-        if (args.Frequency >= MinFrequency && args.Frequency <= MaxFrequency)
-            ent.Comp.Frequency = (uint) args.Frequency;
+        if (args.Frequency < MinFrequency || args.Frequency > MaxFrequency)
+        {
+            UpdateUi(ent);
+            return;
+        }
+
+        if (ent.Comp.Frequency == (uint) args.Frequency)
+        {
+            UpdateUi(ent);
+            return;
+        }
+
+        ent.Comp.Frequency = (uint) args.Frequency;
 
         RefreshBroadcastCache(true);
         UpdateUi(ent);
@@ -107,6 +124,9 @@ public sealed class StationRadioReceiverSystem : EntitySystem
     private void OnToggleReceiver(Entity<StationRadioReceiverComponent> ent, ref ToggleStationRadioReceiverMessage args)
     {
         if (!args.Actor.Valid)
+            return;
+
+        if (ent.Comp.Active == args.Active)
             return;
 
         ent.Comp.Active = args.Active;

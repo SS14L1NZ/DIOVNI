@@ -36,11 +36,25 @@ public sealed class StationRadioServerSystem : EntitySystem
         if (!args.Actor.Valid)
             return;
 
-        if (args.Frequency >= MinFrequency && args.Frequency <= MaxFrequency)
-            ent.Comp.Frequency = (uint) args.Frequency;
+        if (args.Frequency < MinFrequency || args.Frequency > MaxFrequency)
+        {
+            UpdateUi(ent);
+            return;
+        }
+
+        var oldFrequency = ent.Comp.Frequency;
+        var newFrequency = (uint) args.Frequency;
+
+        if (oldFrequency == newFrequency)
+        {
+            UpdateUi(ent);
+            return;
+        }
+
+        ent.Comp.Frequency = newFrequency;
 
         UpdateUi(ent);
-        RefreshAllReceivers();
+        RefreshReceiversForFrequencies(oldFrequency, newFrequency);
     }
 
     private void OnSetName(Entity<StationRadioServerComponent> ent, ref SetStationRadioBroadcastNameMessage args)
@@ -62,11 +76,14 @@ public sealed class StationRadioServerSystem : EntitySystem
             new StationRadioBoundUiState(ent.Comp.Frequency, null, ent.Comp.BroadcastName, true));
     }
 
-    private void RefreshAllReceivers()
+    private void RefreshReceiversForFrequencies(uint frequencyA, uint frequencyB)
     {
         var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out _))
+        while (query.MoveNext(out var receiver, out var comp))
         {
+            if (comp.Frequency != frequencyA && comp.Frequency != frequencyB)
+                continue;
+
             RaiseLocalEvent(receiver, new StationRadioRefreshEvent());
         }
     }

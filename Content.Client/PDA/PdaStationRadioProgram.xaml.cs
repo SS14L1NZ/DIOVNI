@@ -15,6 +15,7 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
 
     private int _frequency;
     private bool _suppressEvents;
+    private int? _lastSentFrequency;
 
     public PdaStationRadioProgram()
     {
@@ -30,7 +31,7 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
             if (_suppressEvents)
                 return;
 
-            OnFrequencyChanged?.Invoke((int) FrequencySlider.Value);
+            EmitFrequencyChanged((int) FrequencySlider.Value);
         };
 
         ToggleListeningButton.OnPressed += _ => OnToggleListening?.Invoke();
@@ -49,6 +50,7 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
     {
         _suppressEvents = true;
         _frequency = (int) frequency;
+        _lastSentFrequency = _frequency;
         FrequencyLineEdit.Text = frequency.ToString();
         FrequencySlider.Value = frequency;
         ToggleListeningButton.Pressed = enabled;
@@ -82,6 +84,15 @@ public sealed partial class PdaStationRadioProgram : BoxContainer
     private void TrySendFrequency(string text)
     {
         if (int.TryParse(text.Trim(), out var value))
-            OnFrequencyChanged?.Invoke(value);
+            EmitFrequencyChanged(value);
+    }
+
+    private void EmitFrequencyChanged(int value)
+    {
+        if (_lastSentFrequency == value)
+            return;
+
+        _lastSentFrequency = value;
+        OnFrequencyChanged?.Invoke(value);
     }
 }

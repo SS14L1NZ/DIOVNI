@@ -49,10 +49,13 @@ namespace Content.Server.PDA
         [Dependency] private readonly IGameTiming _timing = default!;
 
         private static readonly TimeSpan StationRadioScanDuration = TimeSpan.FromSeconds(2);
+        private static readonly TimeSpan StationRadioDirectoryCacheDuration = TimeSpan.FromSeconds(1);
         private static readonly List<PdaStationRadioScanEntry> EmptyStationRadioScanResults = new();
         private readonly Dictionary<EntityUid, TimeSpan> _pendingStationRadioScans = new();
         private readonly Dictionary<EntityUid, List<PdaStationRadioScanEntry>> _stationRadioScanResults = new();
         private readonly List<EntityUid> _completedStationRadioScans = new();
+        private TimeSpan _stationRadioDirectoryCacheExpires;
+        private List<PdaStationRadioScanEntry>? _stationRadioDirectoryCache;
 
         public override void Initialize()
         {
@@ -99,7 +102,7 @@ namespace Content.Server.PDA
             foreach (var uid in _completedStationRadioScans)
             {
                 _pendingStationRadioScans.Remove(uid);
-                _stationRadioScanResults[uid] = BuildStationRadioScanResults();
+                _stationRadioScanResults[uid] = GetStationRadioDirectory();
 
                 if (TryComp(uid, out PdaComponent? pda))
                     UpdatePdaUi(uid, pda);
@@ -380,6 +383,9 @@ namespace Content.Server.PDA
                 return;
             }
 
+            if (stationRadio.Frequency == (uint) msg.Frequency)
+                return;
+
             stationRadio.Frequency = (uint) msg.Frequency;
             RaiseLocalEvent(uid, new StationRadioRefreshEvent());
             UpdatePdaUi(uid, pda, msg.Actor);
@@ -391,6 +397,9 @@ namespace Content.Server.PDA
                 return;
 
             if (!HasComp<StationRadioReceiverComponent>(uid))
+                return;
+
+            if (_pendingStationRadioScans.ContainsKey(uid))
                 return;
 
             _pendingStationRadioScans[uid] = _timing.CurTime + StationRadioScanDuration;
@@ -498,6 +507,16 @@ namespace Content.Server.PDA
 
             results.Sort((left, right) => left.Frequency.CompareTo(right.Frequency));
             return results;
+        }
+
+        private List<PdaStationRadioScanEntry> GetStationRadioDirectory()
+        {
+            if (_stationRadioDirectoryCache != null && _stationRadioDirectoryCacheExpires > _timing.CurTime)
+                return _stationRadioDirectoryCache;
+
+            _stationRadioDirectoryCache = BuildStationRadioScanResults();
+            _stationRadioDirectoryCacheExpires = _timing.CurTime + StationRadioDirectoryCacheDuration;
+            return _stationRadioDirectoryCache;
         }
     }
 }

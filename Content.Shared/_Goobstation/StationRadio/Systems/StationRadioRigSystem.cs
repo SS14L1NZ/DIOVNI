@@ -31,6 +31,9 @@ public sealed class StationRadioRigSystem : EntitySystem
         if (!args.Actor.Valid)
             return;
 
+        if (ent.Comp.VoiceRelayEnabled == args.Active)
+            return;
+
         ent.Comp.VoiceRelayEnabled = args.Active;
         UpdateUi(ent);
     }
@@ -46,14 +49,25 @@ public sealed class StationRadioRigSystem : EntitySystem
             return;
         }
 
+        var changedFrequencies = new HashSet<uint>();
+        var requestedFrequency = (uint) args.Frequency;
         var linkedServers = GetLinkedServers(ent.Owner);
         foreach (var server in linkedServers)
         {
-            if (TryComp<StationRadioServerComponent>(server, out var serverComp))
-                serverComp.Frequency = (uint) args.Frequency;
+            if (!TryComp<StationRadioServerComponent>(server, out var serverComp))
+                continue;
+
+            if (serverComp.Frequency == requestedFrequency)
+                continue;
+
+            changedFrequencies.Add(serverComp.Frequency);
+            changedFrequencies.Add(requestedFrequency);
+            serverComp.Frequency = requestedFrequency;
         }
 
-        RefreshAllReceivers();
+        if (changedFrequencies.Count > 0)
+            RefreshReceiversForFrequencies(changedFrequencies);
+
         UpdateUi(ent);
     }
 
@@ -90,11 +104,14 @@ public sealed class StationRadioRigSystem : EntitySystem
         return linkedServers;
     }
 
-    private void RefreshAllReceivers()
+    private void RefreshReceiversForFrequencies(HashSet<uint> frequencies)
     {
         var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out _))
+        while (query.MoveNext(out var receiver, out var comp))
         {
+            if (!frequencies.Contains(comp.Frequency))
+                continue;
+
             RaiseLocalEvent(receiver, new StationRadioRefreshEvent());
         }
     }
