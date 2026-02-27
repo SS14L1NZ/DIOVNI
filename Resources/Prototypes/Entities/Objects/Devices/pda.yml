@@ -132,6 +132,11 @@
     proto: robot
   - type: Speech
     speechVerb: Robotic
+  - type: StationRadioReceiver
+    active: false
+    defaultParams:
+      volume: 2.2
+      maxDistance: 5
   - type: LanguageSpeaker # Einstein Engines - Language
   - type: LanguageKnowledge # Einstein Engines - Language
     speaks:

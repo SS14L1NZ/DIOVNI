@@ -25,6 +25,10 @@ using Content.Server._NF.SectorServices; // Frontier
 using Content.Shared._Mono.Company;
 using Robust.Shared.Prototypes;
 using Content.Shared.DeviceNetwork.Components;
+using Content.Server.Radio.Components;
+using Content.Shared._Goobstation.StationRadio.Components;
+using Content.Shared._Goobstation.StationRadio.Events;
+using Robust.Shared.Timing;
 
 namespace Content.Server.PDA
 {
@@ -42,6 +46,13 @@ namespace Content.Server.PDA
         [Dependency] private readonly IdCardSystem _idCard = default!;
         [Dependency] private readonly SectorServiceSystem _sectorService = default!;
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+        [Dependency] private readonly IGameTiming _timing = default!;
+
+        private static readonly TimeSpan StationRadioScanDuration = TimeSpan.FromSeconds(2);
+        private static readonly List<PdaStationRadioScanEntry> EmptyStationRadioScanResults = new();
+        private readonly Dictionary<EntityUid, TimeSpan> _pendingStationRadioScans = new();
+        private readonly Dictionary<EntityUid, List<PdaStationRadioScanEntry>> _stationRadioScanResults = new();
+        private readonly List<EntityUid> _completedStationRadioScans = new();
 
         public override void Initialize()
         {
@@ -55,14 +66,44 @@ namespace Content.Server.PDA
             SubscribeLocalEvent<PdaComponent, PdaToggleFlashlightMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaShowRingtoneMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaShowMusicMessage>(OnUiMessage);
+            SubscribeLocalEvent<PdaComponent, PdaToggleStationRadioMessage>(OnUiMessage);
+            SubscribeLocalEvent<PdaComponent, PdaSelectStationRadioFrequencyMessage>(OnUiMessage);
+            SubscribeLocalEvent<PdaComponent, PdaScanStationRadioMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaShowUplinkMessage>(OnUiMessage);
             SubscribeLocalEvent<PdaComponent, PdaLockUplinkMessage>(OnUiMessage);
 
             SubscribeLocalEvent<PdaComponent, CartridgeLoaderNotificationSentEvent>(OnNotification);
+            SubscribeLocalEvent<PdaComponent, EntityTerminatingEvent>(OnPdaTerminating);
 
             SubscribeLocalEvent<StationRenamedEvent>(OnStationRenamed);
             SubscribeLocalEvent<EntityRenamedEvent>(OnEntityRenamed, after: new[] { typeof(IdCardSystem) });
             SubscribeLocalEvent<AlertLevelChangedEvent>(OnAlertLevelChanged);
+        }
+
+        public override void Update(float frameTime)
+        {
+            base.Update(frameTime);
+
+            if (_pendingStationRadioScans.Count == 0)
+                return;
+
+            _completedStationRadioScans.Clear();
+            foreach (var (uid, completeTime) in _pendingStationRadioScans)
+            {
+                if (completeTime > _timing.CurTime)
+                    continue;
+
+                _completedStationRadioScans.Add(uid);
+            }
+
+            foreach (var uid in _completedStationRadioScans)
+            {
+                _pendingStationRadioScans.Remove(uid);
+                _stationRadioScanResults[uid] = BuildStationRadioScanResults();
+
+                if (TryComp(uid, out PdaComponent? pda))
+                    UpdatePdaUi(uid, pda);
+            }
         }
 
         private void OnEntityRenamed(ref EntityRenamedEvent ev)
@@ -171,6 +212,12 @@ namespace Content.Server.PDA
                 actor.PlayerSession.Channel);
         }
 
+            private void OnPdaTerminating(EntityUid uid, PdaComponent component, ref EntityTerminatingEvent args)
+            {
+                _pendingStationRadioScans.Remove(uid);
+                _stationRadioScanResults.Remove(uid);
+            }
+
         /// <summary>
         /// Send new UI state to clients, call if you modify something like uplink.
         /// </summary>
@@ -184,6 +231,14 @@ namespace Content.Server.PDA
 
             var address = GetDeviceNetAddress(uid);
             var hasInstrument = HasComp<InstrumentComponent>(uid);
+            var canListenStationRadio = TryComp<StationRadioReceiverComponent>(uid, out var stationRadioComp);
+            var stationRadioEnabled = stationRadioComp?.Active ?? false;
+            var stationRadioFrequency = stationRadioComp?.Frequency ?? 145;
+            var stationRadioName = stationRadioComp == null
+                ? null
+                : GetStationRadioNameForFrequency(stationRadioComp.Frequency);
+            var stationRadioScanning = _pendingStationRadioScans.ContainsKey(uid);
+            var stationRadioScanResults = _stationRadioScanResults.GetValueOrDefault(uid) ?? EmptyStationRadioScanResults;
             var showUplink = HasComp<UplinkComponent>(uid) && IsUnlocked(uid);
 
             UpdateStationName(uid, pda);
@@ -243,6 +298,12 @@ namespace Content.Server.PDA
                 pda.StationName,
                 showUplink,
                 hasInstrument,
+                canListenStationRadio,
+                stationRadioEnabled,
+                stationRadioFrequency,
+                stationRadioName,
+                stationRadioScanning,
+                stationRadioScanResults,
                 address);
 
             _ui.SetUiState(uid, PdaUiKey.Key, state);
@@ -290,6 +351,50 @@ namespace Content.Server.PDA
 
             if (TryComp<InstrumentComponent>(uid, out var instrument))
                 _instrument.ToggleInstrumentUi(uid, msg.Actor, instrument);
+        }
+
+        private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaToggleStationRadioMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            if (!TryComp<StationRadioReceiverComponent>(uid, out var stationRadio))
+                return;
+
+            stationRadio.Active = !stationRadio.Active;
+            RaiseLocalEvent(uid, new StationRadioRefreshEvent());
+            UpdatePdaUi(uid, pda, msg.Actor);
+        }
+
+        private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaSelectStationRadioFrequencyMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            if (!TryComp<StationRadioReceiverComponent>(uid, out var stationRadio))
+                return;
+
+            if (msg.Frequency is < 1 or > 9999)
+            {
+                UpdatePdaUi(uid, pda, msg.Actor);
+                return;
+            }
+
+            stationRadio.Frequency = (uint) msg.Frequency;
+            RaiseLocalEvent(uid, new StationRadioRefreshEvent());
+            UpdatePdaUi(uid, pda, msg.Actor);
+        }
+
+        private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaScanStationRadioMessage msg)
+        {
+            if (!PdaUiKey.Key.Equals(msg.UiKey))
+                return;
+
+            if (!HasComp<StationRadioReceiverComponent>(uid))
+                return;
+
+            _pendingStationRadioScans[uid] = _timing.CurTime + StationRadioScanDuration;
+            UpdatePdaUi(uid, pda, msg.Actor);
         }
 
         private void OnUiMessage(EntityUid uid, PdaComponent pda, PdaShowUplinkMessage msg)
@@ -347,6 +452,52 @@ namespace Content.Server.PDA
             }
 
             return address;
+        }
+
+        private string? GetStationRadioNameForFrequency(uint frequency)
+        {
+            string? name = null;
+
+            var query = EntityQueryEnumerator<StationRadioServerComponent, RadioMicrophoneComponent>();
+            while (query.MoveNext(out _, out var server, out var microphone))
+            {
+                var isAvailable = server.Broadcasting || microphone.Enabled;
+                if (!isAvailable || server.Frequency != frequency)
+                    continue;
+
+                name = string.IsNullOrWhiteSpace(server.BroadcastName)
+                    ? "Station Radio"
+                    : server.BroadcastName;
+                break;
+            }
+
+            return name;
+        }
+
+        private List<PdaStationRadioScanEntry> BuildStationRadioScanResults()
+        {
+            var seen = new HashSet<uint>();
+            var results = new List<PdaStationRadioScanEntry>();
+
+            var query = EntityQueryEnumerator<StationRadioServerComponent, RadioMicrophoneComponent>();
+            while (query.MoveNext(out _, out var server, out var microphone))
+            {
+                var isAvailable = server.Broadcasting || microphone.Enabled;
+                if (!isAvailable)
+                    continue;
+
+                if (!seen.Add(server.Frequency))
+                    continue;
+
+                var name = string.IsNullOrWhiteSpace(server.BroadcastName)
+                    ? "Station Radio"
+                    : server.BroadcastName;
+
+                results.Add(new PdaStationRadioScanEntry(server.Frequency, name));
+            }
+
+            results.Sort((left, right) => left.Frequency.CompareTo(right.Frequency));
+            return results;
         }
     }
 }

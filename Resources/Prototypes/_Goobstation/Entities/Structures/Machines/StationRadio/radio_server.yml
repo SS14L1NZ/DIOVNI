@@ -24,6 +24,12 @@
     powerRequired: true
     broadcastChannel: RadioShow
     unobstructedRequired: true
+  - type: ActivatableUI
+    key: enum.StationRadioUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.StationRadioUiKey.Key:
+        type: StationRadioBoundUserInterface
 
 - type: entity
   id: StationRadioRig
@@ -45,4 +51,10 @@
   - type: Rotatable
   - type: Machine
     board: StationRadioRigCircuitboard
+  - type: ActivatableUI
+    key: enum.StationRadioUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.StationRadioUiKey.Key:
+        type: StationRadioBoundUserInterface
   - type: RadioRig

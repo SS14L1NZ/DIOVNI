@@ -48,4 +48,10 @@
   - type: ActiveRadio
     channels:
     - RadioShow
+  - type: ActivatableUI
+    key: enum.StationRadioUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.StationRadioUiKey.Key:
+        type: StationRadioBoundUserInterface
   - type: StationRadioReceiver

@@ -17,6 +17,8 @@ using Content.Shared.Power.EntitySystems;
 using Content.Shared.Radio.Components;
 using Content.Shared.UserInterface; // Nuclear-14
 using Content.Shared._NC.Radio; // Nuclear-14
+using Content.Shared._Goobstation.StationRadio;
+using Content.Shared._Goobstation.StationRadio.Components;
 using Robust.Server.GameObjects; // Nuclear-14
 using Robust.Shared.Prototypes;
 using Content.Shared.Access.Systems; // Frontier
@@ -38,7 +40,6 @@ public sealed class RadioDeviceSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly AccessReaderSystem _access = default!; // Frontier: access
-    [Dependency] private readonly LanguageSystem _language = default!;
     [Dependency] private readonly SharedPowerReceiverSystem _power = default!; // Goob
 
     // Used to prevent a shitter from using a bunch of radios to spam chat.
@@ -74,6 +75,9 @@ public sealed class RadioDeviceSystem : EntitySystem
         SubscribeLocalEvent<RadioMicrophoneComponent, ToggleHandheldRadioSpeakerMessage>(OnToggleHandheldRadioSpeaker);
         SubscribeLocalEvent<RadioMicrophoneComponent, SelectHandheldRadioFrequencyMessage>(OnChangeHandheldRadioFrequency);
         // Nuclear-14-End
+
+        SubscribeLocalEvent<RadioMicrophoneComponent, MapInitEvent>(OnStationRadioServerMapInit);
+        SubscribeLocalEvent<RadioMicrophoneComponent, SelectStationRadioFrequencyMessage>(OnStationRadioServerFrequencySelected);
 
         SubscribeLocalEvent<IntercomComponent, MapInitEvent>(OnMapInit); // Frontier
     }
@@ -203,12 +207,19 @@ public sealed class RadioDeviceSystem : EntitySystem
             return;
 
         var proto = _protoMan.Index<RadioChannelPrototype>(component.BroadcastChannel);
+        var channelName = proto.LocalizedName;
+
+        if (TryComp<StationRadioServerComponent>(uid, out var stationServer)
+            && !string.IsNullOrWhiteSpace(stationServer.BroadcastName))
+        {
+            channelName = stationServer.BroadcastName;
+        }
 
         using (args.PushGroup(nameof(RadioMicrophoneComponent)))
         {
             args.PushMarkup(Loc.GetString("handheld-radio-component-on-examine", ("frequency", /*Nuclear-14-start*/ component.Frequency /*Nuclear-14-end*/)));
             args.PushMarkup(Loc.GetString("handheld-radio-component-chennel-examine",
-                ("channel", proto.LocalizedName)));
+                ("channel", channelName)));
         }
     }
 
@@ -440,5 +451,21 @@ public sealed class RadioDeviceSystem : EntitySystem
             ent.MicrophoneEnabled = true;
             _appearance.SetData(uid, RadioDeviceVisuals.Broadcasting, true);
         }
+    }
+
+    private void OnStationRadioServerMapInit(EntityUid uid, RadioMicrophoneComponent microphone, ref MapInitEvent args)
+    {
+        if (!TryComp<StationRadioServerComponent>(uid, out var stationServer))
+            return;
+
+        microphone.Frequency = (int) stationServer.Frequency;
+    }
+
+    private void OnStationRadioServerFrequencySelected(EntityUid uid, RadioMicrophoneComponent microphone, SelectStationRadioFrequencyMessage args)
+    {
+        if (!TryComp<StationRadioServerComponent>(uid, out var stationServer))
+            return;
+
+        microphone.Frequency = (int) stationServer.Frequency;
     }
 }

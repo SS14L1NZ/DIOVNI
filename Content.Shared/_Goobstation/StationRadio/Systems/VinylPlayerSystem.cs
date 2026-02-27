@@ -8,6 +8,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Network;
+using Robust.Shared.Timing;
 
 namespace Content.Shared._Goobstation.StationRadio.Systems;
 
@@ -17,7 +18,7 @@ public sealed class VinylPlayerSystem : EntitySystem
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedPowerReceiverSystem _power = default!;
-    [Dependency] private readonly SharedDeviceLinkSystem _deviceLinkSystem = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     public override void Initialize()
     {
@@ -33,26 +34,25 @@ public sealed class VinylPlayerSystem : EntitySystem
         if (comp.SoundEntity != null && !args.Powered)
             comp.SoundEntity = _audio.Stop(comp.SoundEntity);
 
-        if (!CheckForRadioRig(uid))
+        if (args.Powered)
             return;
 
-        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out _))
-        {
-            RaiseLocalEvent(receiver, new StationRadioMediaStoppedEvent());
-        }
+        var linkedServers = GetLinkedServers(uid);
+        if (linkedServers.Count == 0)
+            return;
+
+        StopBroadcastOnServers(linkedServers);
+        RefreshAllReceivers();
     }
 
     private void OnDestruction(EntityUid uid, VinylPlayerComponent comp, DestructionEventArgs args)
     {
-        if (!CheckForRadioRig(uid))
+        var linkedServers = GetLinkedServers(uid);
+        if (linkedServers.Count == 0)
             return;
 
-        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out var _))
-        {
-            RaiseLocalEvent(receiver, new StationRadioMediaStoppedEvent());
-        }
+        StopBroadcastOnServers(linkedServers);
+        RefreshAllReceivers();
     }
 
     private void OnVinylInserted(EntityUid uid, VinylPlayerComponent comp, EntInsertedIntoContainerMessage args)
@@ -68,15 +68,12 @@ public sealed class VinylPlayerSystem : EntitySystem
         var ev = new VinylInsertedEvent(args.Entity);
         RaiseLocalEvent(uid, ref ev);
 
-        if (!CheckForRadioRig(uid))
+        var linkedServers = GetLinkedServers(uid);
+        if (linkedServers.Count == 0)
             return;
 
-        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out var receiverComponent))
-        {
-            if (!receiverComponent.SoundEntity.HasValue)
-                RaiseLocalEvent(receiver, new StationRadioMediaPlayedEvent(vinylcomp.Song));
-        }
+        StartBroadcastOnServers(linkedServers, vinylcomp.Song);
+        RefreshAllReceivers();
     }
 
     private void OnVinylRemove(EntityUid uid, VinylPlayerComponent comp, EntRemovedFromContainerMessage args)
@@ -88,43 +85,73 @@ public sealed class VinylPlayerSystem : EntitySystem
         var ev = new VinylRemovedEvent(args.Entity);
         RaiseLocalEvent(uid, ref ev);
 
-        if (!CheckForRadioRig(uid))
+        var linkedServers = GetLinkedServers(uid);
+        if (linkedServers.Count == 0)
             return;
 
-        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out var _))
-        {
-            RaiseLocalEvent(receiver, new StationRadioMediaStoppedEvent());
-        }
+        StopBroadcastOnServers(linkedServers);
+        RefreshAllReceivers();
     }
 
-    private bool CheckForRadioRig(EntityUid uid)
+    private HashSet<EntityUid> GetLinkedServers(EntityUid uid)
     {
+        var linkedServers = new HashSet<EntityUid>();
+
         if (TryComp<DeviceLinkSourceComponent>(uid, out var source))
         {
             foreach (var linked in source.LinkedPorts.Keys)
             {
-                if (HasComp<RadioRigComponent>(linked) && CheckForRadioServer(linked))
+                if (!HasComp<RadioRigComponent>(linked))
+                    continue;
+
+                if (!TryComp<DeviceLinkSinkComponent>(linked, out var sink))
+                    continue;
+
+                foreach (var server in sink.LinkedSources)
                 {
-                    return true;
+                    if (HasComp<StationRadioServerComponent>(server))
+                        linkedServers.Add(server);
                 }
             }
         }
-        return false;
+
+        return linkedServers;
     }
 
-    private bool CheckForRadioServer(EntityUid uid)
+    private void StartBroadcastOnServers(HashSet<EntityUid> servers, SoundPathSpecifier song)
     {
-        if (TryComp<DeviceLinkSinkComponent>(uid, out var source))
+        var songPath = song.Path.ToString();
+
+        foreach (var server in servers)
         {
-            foreach (var linked in source.LinkedSources)
-            {
-                if (HasComp<StationRadioServerComponent>(linked))
-                {
-                    return true;
-                }
-            }
+            if (!TryComp<StationRadioServerComponent>(server, out var serverComp))
+                continue;
+
+            serverComp.CurrentMediaPath = songPath;
+            serverComp.CurrentMediaStart = _timing.CurTime;
+            serverComp.Broadcasting = true;
         }
-        return false;
+    }
+
+    private void StopBroadcastOnServers(HashSet<EntityUid> servers)
+    {
+        foreach (var server in servers)
+        {
+            if (!TryComp<StationRadioServerComponent>(server, out var serverComp))
+                continue;
+
+            serverComp.Broadcasting = false;
+            serverComp.CurrentMediaPath = null;
+            serverComp.CurrentMediaStart = null;
+        }
+    }
+
+    private void RefreshAllReceivers()
+    {
+        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
+        while (query.MoveNext(out var receiver, out _))
+        {
+            RaiseLocalEvent(receiver, new StationRadioRefreshEvent());
+        }
     }
 }

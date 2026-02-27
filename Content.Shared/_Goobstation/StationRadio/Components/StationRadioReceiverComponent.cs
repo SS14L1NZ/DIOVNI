@@ -6,11 +6,23 @@ namespace Content.Shared._Goobstation.StationRadio.Components;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class StationRadioReceiverComponent : Component
 {
+    [DataField]
+    public uint Frequency = 145;
+
     /// <summary>
     /// The sound entity being played
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntityUid? SoundEntity;
+
+    [DataField]
+    public string? CurrentMediaPath;
+
+    [DataField]
+    public TimeSpan? CurrentMediaStart;
+
+    [DataField]
+    public TimeSpan NextResync;
 
     /// <summary>
     /// Is the radio turned on

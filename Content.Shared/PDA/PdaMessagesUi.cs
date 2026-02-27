@@ -37,3 +37,26 @@ public sealed class PdaRequestUpdateInterfaceMessage : BoundUserInterfaceMessage
 {
     public PdaRequestUpdateInterfaceMessage() { }
 }
+
+[Serializable, NetSerializable]
+public sealed class PdaToggleStationRadioMessage : BoundUserInterfaceMessage
+{
+    public PdaToggleStationRadioMessage() { }
+}
+
+[Serializable, NetSerializable]
+public sealed class PdaSelectStationRadioFrequencyMessage : BoundUserInterfaceMessage
+{
+    public int Frequency;
+
+    public PdaSelectStationRadioFrequencyMessage(int frequency)
+    {
+        Frequency = frequency;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class PdaScanStationRadioMessage : BoundUserInterfaceMessage
+{
+    public PdaScanStationRadioMessage() { }
+}

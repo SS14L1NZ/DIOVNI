@@ -54,6 +54,42 @@ pda-bound-user-interface-music-button = Music Instrument
 
 pda-bound-user-interface-music-button-description = Play music on your PDA
 
+pda-bound-user-interface-station-radio-on = Station Radio: On
+
+pda-bound-user-interface-station-radio-off = Station Radio: Off
+
+pda-bound-user-interface-station-radio-description = Toggle station radio listening
+
+pda-program-music-title = Music Instrument
+
+pda-program-music-description = Open portable instrument controls
+
+pda-program-station-radio-title = Station Radio
+
+pda-program-radio-short = Радио
+
+pda-program-station-radio-description = Listen and tune station radio frequency
+
+pda-program-station-radio-frequency = Frequency
+
+pda-program-station-radio-current = Now playing: {$name} ({$frequency})
+
+pda-program-station-radio-no-signal = No active station on this frequency
+
+pda-program-station-radio-listening = Listening
+
+pda-program-station-radio-listening-on = Listening: On
+
+pda-program-station-radio-listening-off = Listening: Off
+
+pda-program-station-radio-scan = Scan
+
+pda-program-station-radio-scanning = Scanning...
+
+pda-program-station-radio-found = Found broadcasts
+
+pda-program-station-radio-result = {$name} ({$frequency})
+
 comp-pda-ui-unknown = Unknown
 
 comp-pda-ui-unassigned = Unassigned

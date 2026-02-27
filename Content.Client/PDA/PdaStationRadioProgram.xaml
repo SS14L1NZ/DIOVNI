@@ -1,0 +1,30 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              xmlns:pda="clr-namespace:Content.Client.PDA"
+              Orientation="Vertical"
+              Margin="8"
+              HorizontalExpand="True"
+              VerticalExpand="True">
+    <Label Name="StationNameLabel" Text="{Loc 'pda-program-station-radio-no-signal'}" />
+    <Label Text="{Loc 'pda-program-station-radio-frequency'}" />
+    <BoxContainer Orientation="Horizontal" Margin="0 4 0 0" HorizontalExpand="True">
+        <Button Name="FrequencyDownButton" Text="-" MinWidth="36" />
+        <LineEdit Name="FrequencyLineEdit" HorizontalExpand="True" Margin="4 0" />
+        <Button Name="FrequencyUpButton" Text="+" MinWidth="36" />
+    </BoxContainer>
+    <Slider Name="FrequencySlider"
+        Margin="0 4 0 0"
+        MinValue="1"
+        MaxValue="9999"
+        Value="145" />
+    <Button Name="ToggleListeningButton"
+            Margin="0 8 0 0"
+            ToggleMode="True"
+            Text="{Loc 'pda-program-station-radio-listening'}" />
+
+    <Button Name="ScanButton"
+        Margin="0 8 0 0"
+        Text="{Loc 'pda-program-station-radio-scan'}" />
+
+    <Label Margin="0 6 0 0" Text="{Loc 'pda-program-station-radio-found'}" />
+    <ItemList Name="ScanResultsList" HorizontalExpand="True" VerticalExpand="True" />
+</BoxContainer>

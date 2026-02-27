@@ -16,6 +16,12 @@ namespace Content.Shared.PDA
         public string? StationName;
         public bool HasUplink;
         public bool CanPlayMusic;
+        public bool CanListenStationRadio;
+        public bool StationRadioEnabled;
+        public uint StationRadioFrequency;
+        public string? StationRadioName;
+        public bool StationRadioScanning;
+        public List<PdaStationRadioScanEntry> StationRadioScanResults;
         public string? Address;
         public int Balance; // Frontier
         public string? OwnedShipName; // Frontier
@@ -33,6 +39,12 @@ namespace Content.Shared.PDA
             string? stationName,
             bool hasUplink = false,
             bool canPlayMusic = false,
+            bool canListenStationRadio = false,
+            bool stationRadioEnabled = false,
+            uint stationRadioFrequency = 145,
+            string? stationRadioName = null,
+            bool stationRadioScanning = false,
+            List<PdaStationRadioScanEntry>? stationRadioScanResults = null,
             string? address = null)
             : base(programs, activeUI)
         {
@@ -43,6 +55,12 @@ namespace Content.Shared.PDA
             PdaOwnerInfo = pdaOwnerInfo;
             HasUplink = hasUplink;
             CanPlayMusic = canPlayMusic;
+            CanListenStationRadio = canListenStationRadio;
+            StationRadioEnabled = stationRadioEnabled;
+            StationRadioFrequency = stationRadioFrequency;
+            StationRadioName = stationRadioName;
+            StationRadioScanning = stationRadioScanning;
+            StationRadioScanResults = stationRadioScanResults ?? new List<PdaStationRadioScanEntry>();
             StationName = stationName;
             Address = address;
             Balance = balance; // Frontier
@@ -60,5 +78,18 @@ namespace Content.Shared.PDA
         public Color CompanyColor;
         public string? StationAlertLevel;
         public Color StationAlertColor;
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class PdaStationRadioScanEntry
+    {
+        public uint Frequency;
+        public string Name;
+
+        public PdaStationRadioScanEntry(uint frequency, string name)
+        {
+            Frequency = frequency;
+            Name = name;
+        }
     }
 }

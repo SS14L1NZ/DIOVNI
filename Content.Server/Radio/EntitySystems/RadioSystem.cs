@@ -2,6 +2,7 @@ using Content.Server._NF.Radio; // Frontier
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
 using Content.Server._EinsteinEngines.Language;
+using Content.Shared._Goobstation.StationRadio.Components;
 using Content.Server.Power.Components;
 using Content.Server.Radio.Components;
 using Content.Shared._Mono.Radio;
@@ -67,6 +68,12 @@ public sealed class RadioSystem : EntitySystem
     {
         if (TryComp<RadioMicrophoneComponent>(source, out var radioMicrophone))
             return radioMicrophone.Frequency;
+
+        if (TryComp<StationRadioReceiverComponent>(source, out var stationRadioReceiver))
+            return (int) stationRadioReceiver.Frequency;
+
+        if (TryComp<StationRadioServerComponent>(source, out var stationRadioServer))
+            return (int) stationRadioServer.Frequency;
 
         return channel.Frequency;
     }

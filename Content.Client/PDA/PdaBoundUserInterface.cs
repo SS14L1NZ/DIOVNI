@@ -57,9 +57,24 @@ namespace Content.Client.PDA
                 SendMessage(new ItemSlotButtonPressedEvent(PdaComponent.PdaBookSlotId));
             };
 
-            _menu.ActivateMusicButton.OnPressed += _ =>
+            _menu.OnMusicProgramPressed += () =>
             {
                 SendMessage(new PdaShowMusicMessage());
+            };
+
+            _menu.OnStationRadioTogglePressed += () =>
+            {
+                SendMessage(new PdaToggleStationRadioMessage());
+            };
+
+            _menu.OnStationRadioFrequencyChanged += frequency =>
+            {
+                SendMessage(new PdaSelectStationRadioFrequencyMessage(frequency));
+            };
+
+            _menu.OnStationRadioScanRequested += () =>
+            {
+                SendMessage(new PdaScanStationRadioMessage());
             };
 
             _menu.AccessRingtoneButton.OnPressed += _ =>

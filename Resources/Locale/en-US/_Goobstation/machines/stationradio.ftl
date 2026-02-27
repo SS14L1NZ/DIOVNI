@@ -10,3 +10,8 @@ signal-port-description-radio-server = The input of the radio server, connect a 
 vinyl-popout-no-station = The vinyl ejects itself, you're not on a station!
 vinyl-popout-no-power = The vinyl ejects itself, the player isn't powered!
 vinyl-popout-no-radio-connection = The vinyl ejects itself, the player isn't connected to the radio system!
+
+station-radio-menu-title = Station Radio
+station-radio-menu-broadcast-name = Broadcast name
+station-radio-menu-frequency = Frequency
+station-radio-menu-active = Receiver enabled
