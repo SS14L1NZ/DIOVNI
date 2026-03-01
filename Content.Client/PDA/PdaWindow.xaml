@@ -9,17 +9,54 @@
     <!-- Primary body fill — tintable via PdaBorderColorComponent -->
     <PanelContainer Name="Background" Access="Public" StyleClasses="PdaBodyPlastic" />
     <!-- Decorative accent bands (hidden by default, coloured by PdaBorderColorComponent) -->
-    <PanelContainer Name="AccentH" Margin="-1 175 -2 175" Access="Public" StyleClasses="PdaBackground" />
-    <PanelContainer Name="AccentV" Margin="260 -1 260 -1" Access="Public" StyleClasses="PdaBackground" />
+    <PanelContainer Name="AccentH" Margin="13 200 9 200" Access="Public" StyleClasses="PdaBackground" />
+    <PanelContainer Name="AccentV" Margin="272 -1 272 -1" Access="Public" StyleClasses="PdaBackground" />
     <!-- Angular outer border frame -->
     <PanelContainer Name="Border" StyleClasses="PdaBorderRect" />
 
     <!-- ══════════════════════════════════════════════════════════════ -->
-    <!-- HOUSING STRUCTURE — 3-column layout: Rail │ Body │ Wing      -->
+    <!-- HOUSING — Cyberpunk form factor with chin, side buttons,     -->
+    <!-- grip ridges, data ports, angular cuts and neon accents       -->
     <!-- ══════════════════════════════════════════════════════════════ -->
     <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
 
-        <!-- ▐ LEFT: Metal Rail Frame ▐ -->
+        <!-- ▐ FAR LEFT: Protruding side buttons + grip ▐ -->
+        <BoxContainer Orientation="Vertical" SetWidth="14" VerticalExpand="True">
+            <Control SetHeight="55" />
+            <!-- Side button 1 — power / lock -->
+            <Control SetHeight="30" HorizontalExpand="True">
+                <PanelContainer StyleClasses="PdaCaseSideButtonShadow" Margin="0 2 2 0" />
+                <PanelContainer StyleClasses="PdaCaseSideButton" Margin="0 0 2 2" />
+            </Control>
+            <Control SetHeight="12" />
+            <!-- Side button 2 — volume rocker (long) -->
+            <Control SetHeight="50" HorizontalExpand="True">
+                <PanelContainer StyleClasses="PdaCaseSideButtonShadow" Margin="0 2 2 0" />
+                <PanelContainer StyleClasses="PdaCaseSideButton" Margin="0 0 2 2" />
+            </Control>
+            <Control SetHeight="14" />
+            <!-- Small toggle switch with orange indicator -->
+            <Control SetHeight="16" HorizontalExpand="True">
+                <PanelContainer StyleClasses="PdaCaseSideToggleShadow" Margin="2 2 3 0" />
+                <PanelContainer StyleClasses="PdaCaseSideToggle" Margin="2 0 3 2" />
+            </Control>
+            <Control VerticalExpand="True" />
+            <!-- Rubber grip ridges (bottom-left) -->
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="3" HorizontalExpand="True" Margin="3 0 3 0" />
+            <Control SetHeight="3" />
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="3" HorizontalExpand="True" Margin="3 0 3 0" />
+            <Control SetHeight="3" />
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="3" HorizontalExpand="True" Margin="3 0 3 0" />
+            <Control SetHeight="3" />
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="3" HorizontalExpand="True" Margin="3 0 3 0" />
+            <Control SetHeight="3" />
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="3" HorizontalExpand="True" Margin="3 0 3 0" />
+            <Control SetHeight="3" />
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="3" HorizontalExpand="True" Margin="3 0 3 0" />
+            <Control SetHeight="18" />
+        </BoxContainer>
+
+        <!-- ▐ LEFT: Metal Rail Frame (enhanced) ▐ -->
         <PanelContainer StyleClasses="PdaCaseMetalPanel" SetWidth="48" VerticalExpand="True">
             <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" Margin="0 10">
                 <!-- Top chamfer highlight -->
@@ -27,7 +64,13 @@
                 <Control SetHeight="6" />
                 <!-- Rail bevel line (top) -->
                 <PanelContainer StyleClasses="PdaCaseRailBevel" SetHeight="2" HorizontalExpand="True" Margin="6 0 4 0" />
-                <Control SetHeight="45" />
+                <Control SetHeight="8" />
+
+                <!-- Hex bolt detail (industrial touch) -->
+                <PanelContainer StyleClasses="PdaCaseHexBolt" SetWidth="8" SetHeight="8"
+                                HorizontalAlignment="Center" Margin="0 0 10 0" />
+
+                <Control SetHeight="25" />
 
                 <!-- Handle cutout — hard shadow technique -->
                 <Control SetHeight="105" HorizontalExpand="True" Margin="8 0 6 0">
@@ -35,18 +78,27 @@
                     <PanelContainer StyleClasses="PdaCaseHandleVoid" Margin="0 0 3 3" />
                 </Control>
 
+                <Control SetHeight="8" />
+                <!-- Hex bolt detail (mid) -->
+                <PanelContainer StyleClasses="PdaCaseHexBolt" SetWidth="8" SetHeight="8"
+                                HorizontalAlignment="Center" Margin="10 0 0 0" />
+
                 <!-- Flexible spacer -->
                 <Control VerticalExpand="True" />
 
-                <!-- Speaker / vent grooves -->
+                <!-- Speaker / vent grooves (staggered for industrial look) -->
                 <PanelContainer StyleClasses="PdaCaseGroove" SetHeight="2" Margin="12 0 14 0" HorizontalExpand="True" />
-                <Control SetHeight="5" />
+                <Control SetHeight="4" />
+                <PanelContainer StyleClasses="PdaCaseGroove" SetHeight="2" Margin="10 0 14 0" HorizontalExpand="True" />
+                <Control SetHeight="4" />
                 <PanelContainer StyleClasses="PdaCaseGroove" SetHeight="2" Margin="12 0 14 0" HorizontalExpand="True" />
-                <Control SetHeight="5" />
+                <Control SetHeight="4" />
+                <PanelContainer StyleClasses="PdaCaseGroove" SetHeight="2" Margin="10 0 14 0" HorizontalExpand="True" />
+                <Control SetHeight="4" />
                 <PanelContainer StyleClasses="PdaCaseGroove" SetHeight="2" Margin="12 0 14 0" HorizontalExpand="True" />
-                <Control SetHeight="5" />
-                <PanelContainer StyleClasses="PdaCaseGroove" SetHeight="2" Margin="12 0 14 0" HorizontalExpand="True" />
-                <Control SetHeight="30" />
+                <Control SetHeight="4" />
+                <PanelContainer StyleClasses="PdaCaseGroove" SetHeight="2" Margin="10 0 14 0" HorizontalExpand="True" />
+                <Control SetHeight="25" />
 
                 <!-- Rail bevel line (bottom) -->
                 <PanelContainer StyleClasses="PdaCaseRailBevel" SetHeight="2" HorizontalExpand="True" Margin="6 0 4 0" />
@@ -58,7 +110,7 @@
         <PanelContainer StyleClasses="PdaCaseSeamHighlight" SetWidth="2" VerticalExpand="True" />
         <PanelContainer StyleClasses="PdaCaseSeamShadow" SetWidth="2" VerticalExpand="True" />
 
-        <!-- ▐ CENTER: Main Plastic Body ▐ -->
+        <!-- ▐ CENTER: Main Plastic Body + Chin ▐ -->
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
 
             <!-- Top ridge bar — metal accent strip -->
@@ -66,8 +118,12 @@
                 <PanelContainer StyleClasses="PdaCaseTopRidge" />
             </Control>
 
-            <!-- Close button heading -->
+            <!-- Close button heading + asymmetric cyber indicator -->
             <BoxContainer SetHeight="22" Margin="4 1 8 0" Orientation="Horizontal">
+                <!-- Asymmetric notch / camera indicator strip -->
+                <PanelContainer StyleClasses="PdaCaseTopIndicator" SetWidth="38" SetHeight="14" Margin="8 4 0 0" />
+                <Control SetWidth="4" />
+                <PanelContainer StyleClasses="PdaCaseTopIndicatorDot" SetWidth="6" SetHeight="6" Margin="0 8 0 0" />
                 <Control HorizontalExpand="True"/>
                 <TextureButton Name="CloseButton" StyleClasses="windowCloseButton"
                                VerticalAlignment="Center" Margin="0 2 4 0"/>
@@ -104,17 +160,63 @@
             <!-- Screen bezel outer edge (bottom) -->
             <PanelContainer StyleClasses="PdaCaseBezelEdge" SetHeight="3" HorizontalExpand="True" Margin="8 0" />
 
-            <!-- Footer -->
-            <BoxContainer Orientation="Horizontal" SetHeight="28">
-                <Label Text="{Loc 'comp-pda-ui-footer'}" StyleClasses="PdaWindowFooterText" Margin="16 0 0 6"/>
+            <!-- Footer text -->
+            <BoxContainer Orientation="Horizontal" SetHeight="22">
+                <Label Text="{Loc 'comp-pda-ui-footer'}" StyleClasses="PdaWindowFooterText" Margin="16 0 0 4"/>
             </BoxContainer>
+
+            <!-- ═══════════════════════════════════════════════════ -->
+            <!-- CHIN — extended jaw section with ports and vents   -->
+            <!-- ═══════════════════════════════════════════════════ -->
+            <PanelContainer StyleClasses="PdaCaseChinDivider" SetHeight="2" HorizontalExpand="True" Margin="4 0" />
+
+            <BoxContainer Orientation="Horizontal" SetHeight="50" HorizontalExpand="True">
+                <!-- Left chin: data port cutout -->
+                <BoxContainer Orientation="Vertical" SetWidth="50" Margin="6 4">
+                    <PanelContainer StyleClasses="PdaCaseChinLabel" SetHeight="8" HorizontalExpand="True" Margin="2 0" />
+                    <Control SetHeight="3" />
+                    <Control HorizontalExpand="True" VerticalExpand="True">
+                        <PanelContainer StyleClasses="PdaCaseDataPortShadow" Margin="2 2 0 0" />
+                        <PanelContainer StyleClasses="PdaCaseDataPort" Margin="0 0 2 2" />
+                    </Control>
+                </BoxContainer>
+
+                <Control SetWidth="6" />
+
+                <!-- Center chin: vent grid -->
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="0 6">
+                    <PanelContainer StyleClasses="PdaCaseChinVent" SetHeight="2" HorizontalExpand="True" />
+                    <Control SetHeight="3" />
+                    <PanelContainer StyleClasses="PdaCaseChinVent" SetHeight="2" HorizontalExpand="True" Margin="4 0 4 0" />
+                    <Control SetHeight="3" />
+                    <PanelContainer StyleClasses="PdaCaseChinVent" SetHeight="2" HorizontalExpand="True" />
+                    <Control SetHeight="3" />
+                    <PanelContainer StyleClasses="PdaCaseChinVent" SetHeight="2" HorizontalExpand="True" Margin="4 0 4 0" />
+                    <Control SetHeight="3" />
+                    <PanelContainer StyleClasses="PdaCaseChinVent" SetHeight="2" HorizontalExpand="True" />
+                    <Control VerticalExpand="True" />
+                </BoxContainer>
+
+                <Control SetWidth="6" />
+
+                <!-- Right chin: angular accent block -->
+                <BoxContainer Orientation="Vertical" SetWidth="60" Margin="0 4 6 4">
+                    <Control VerticalExpand="True" />
+                    <Control HorizontalExpand="True" SetHeight="22">
+                        <PanelContainer StyleClasses="PdaCaseChinAccentShadow" Margin="2 2 0 0" />
+                        <PanelContainer StyleClasses="PdaCaseChinAccent" Margin="0 0 2 2" />
+                    </Control>
+                </BoxContainer>
+            </BoxContainer>
+            <!-- ═══ END CHIN ═══ -->
+
         </BoxContainer>
 
         <!-- Body → Wing junction seam (reversed shadow direction) -->
         <PanelContainer StyleClasses="PdaCaseSeamShadow" SetWidth="2" VerticalExpand="True" />
         <PanelContainer StyleClasses="PdaCaseSeamHighlight" SetWidth="1" VerticalExpand="True" />
 
-        <!-- ▐ RIGHT: Accessory Wing ▐ -->
+        <!-- ▐ RIGHT: Accessory Wing (enhanced with neon accents) ▐ -->
         <PanelContainer StyleClasses="PdaCaseWingBg" SetWidth="58" VerticalExpand="True">
             <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">
 
@@ -128,7 +230,13 @@
                                     HorizontalAlignment="Center" />
                 </BoxContainer>
 
-                <Control SetHeight="12" />
+                <Control SetHeight="8" />
+
+                <!-- Cyberpunk neon accent strip #1 -->
+                <PanelContainer StyleClasses="PdaCaseNeonStrip" SetHeight="3"
+                                HorizontalExpand="True" Margin="6 0 10 0" />
+
+                <Control SetHeight="8" />
 
                 <!-- LED indicator panel — hard shadow technique -->
                 <Control HorizontalExpand="True" Margin="4 0 8 0">
@@ -151,7 +259,13 @@
                     </PanelContainer>
                 </Control>
 
-                <Control SetHeight="14" />
+                <Control SetHeight="10" />
+
+                <!-- Cyberpunk neon accent strip #2 -->
+                <PanelContainer StyleClasses="PdaCaseNeonStrip" SetHeight="2"
+                                HorizontalExpand="True" Margin="8 0 6 0" />
+
+                <Control SetHeight="10" />
 
                 <!-- Stylus / pen slot — hard shadow technique -->
                 <Control VerticalExpand="True" Margin="10 0 12 0">
@@ -159,11 +273,37 @@
                     <PanelContainer StyleClasses="PdaCaseStylusBody" Margin="0 0 2 2" />
                 </Control>
 
+                <Control SetHeight="6" />
+
+                <!-- Hex bolt on wing -->
+                <PanelContainer StyleClasses="PdaCaseHexBolt" SetWidth="8" SetHeight="8"
+                                HorizontalAlignment="Center" Margin="0 0 8 0" />
+
+                <Control SetHeight="6" />
+
                 <!-- Bottom wing angular accent -->
                 <PanelContainer StyleClasses="PdaCaseWingAccent" SetHeight="30"
                                 HorizontalExpand="True" Margin="0 0 8 6" />
             </BoxContainer>
         </PanelContainer>
+
+        <!-- ▐ FAR RIGHT: Small protruding notch + grip ▐ -->
+        <BoxContainer Orientation="Vertical" SetWidth="10" VerticalExpand="True">
+            <Control SetHeight="42" />
+            <!-- SIM-tray style notch -->
+            <Control SetHeight="22" HorizontalExpand="True">
+                <PanelContainer StyleClasses="PdaCaseRightNotchShadow" Margin="2 2 0 0" />
+                <PanelContainer StyleClasses="PdaCaseRightNotch" Margin="2 0 0 2" />
+            </Control>
+            <Control VerticalExpand="True" />
+            <!-- Right grip dots -->
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="2" HorizontalExpand="True" Margin="3 0 2 0" />
+            <Control SetHeight="4" />
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="2" HorizontalExpand="True" Margin="3 0 2 0" />
+            <Control SetHeight="4" />
+            <PanelContainer StyleClasses="PdaCaseGripDot" SetHeight="2" HorizontalExpand="True" Margin="3 0 2 0" />
+            <Control SetHeight="25" />
+        </BoxContainer>
 
     </BoxContainer>
 </pda:PdaWindow>

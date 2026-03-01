@@ -1779,6 +1779,115 @@ namespace Content.Client.Stylesheets
                         BorderThickness = new Thickness(0, 2, 0, 0),
                     }),
 
+                // ── PDA Cyberpunk Additions ───────────────────────────
+
+                // Protruding side button (raised metal, left edge)
+                Element<PanelContainer>().Class("PdaCaseSideButton")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#7A756C"),
+                        BorderColor = Color.FromHex("#9A958E"),
+                        BorderThickness = new Thickness(1, 1, 0, 0),
+                    }),
+
+                // Side button drop-shadow
+                Element<PanelContainer>().Class("PdaCaseSideButtonShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#2A2826"))),
+
+                // Small toggle switch (with orange indicator border)
+                Element<PanelContainer>().Class("PdaCaseSideToggle")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#5E5A54"),
+                        BorderColor = Color.FromHex("#EE9944"),
+                        BorderThickness = new Thickness(0, 0, 0, 2),
+                    }),
+
+                // Toggle switch drop-shadow
+                Element<PanelContainer>().Class("PdaCaseSideToggleShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#1E1C1A"))),
+
+                // Rubber grip ridge dots
+                Element<PanelContainer>().Class("PdaCaseGripDot")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#5A5650"))),
+
+                // Hex bolt decorative detail (industrial rivet)
+                Element<PanelContainer>().Class("PdaCaseHexBolt")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#555250"),
+                        BorderColor = Color.FromHex("#3A3836"),
+                        BorderThickness = new Thickness(1),
+                    }),
+
+                // Asymmetric top indicator bar (notch / camera strip)
+                Element<PanelContainer>().Class("PdaCaseTopIndicator")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#3A3836"),
+                        BorderColor = Color.FromHex("#555250"),
+                        BorderThickness = new Thickness(0, 0, 2, 2),
+                    }),
+
+                // Top indicator dot (cyber-teal glow)
+                Element<PanelContainer>().Class("PdaCaseTopIndicatorDot")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#44CCBB"))),
+
+                // Chin divider line (body → chin boundary)
+                Element<PanelContainer>().Class("PdaCaseChinDivider")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#555250"))),
+
+                // Chin label marking (small etched strip)
+                Element<PanelContainer>().Class("PdaCaseChinLabel")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#AEA898"))),
+
+                // Data port cutout (deep recessed I/O jack)
+                Element<PanelContainer>().Class("PdaCaseDataPort")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#1A1816"),
+                        BorderColor = Color.FromHex("#3D3B38"),
+                        BorderThickness = new Thickness(1),
+                    }),
+
+                // Data port drop-shadow
+                Element<PanelContainer>().Class("PdaCaseDataPortShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#0A0908"))),
+
+                // Chin vent grid lines (heat dissipation)
+                Element<PanelContainer>().Class("PdaCaseChinVent")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#4A4845"))),
+
+                // Chin angular accent block
+                Element<PanelContainer>().Class("PdaCaseChinAccent")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#8A8478"),
+                        BorderColor = Color.FromHex("#6A6660"),
+                        BorderThickness = new Thickness(2, 0, 0, 0),
+                    }),
+
+                // Chin accent drop-shadow
+                Element<PanelContainer>().Class("PdaCaseChinAccentShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#2A2826"))),
+
+                // Cyberpunk neon-like accent strip (teal glow line)
+                Element<PanelContainer>().Class("PdaCaseNeonStrip")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#2AA8A0"))),
+
+                // Right side SIM-tray notch (body)
+                Element<PanelContainer>().Class("PdaCaseRightNotch")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#6B6864"),
+                        BorderColor = Color.FromHex("#8A8680"),
+                        BorderThickness = new Thickness(0, 1, 0, 1),
+                    }),
+
+                // Right side notch drop-shadow
+                Element<PanelContainer>().Class("PdaCaseRightNotchShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#2A2826"))),
+
                 // Fancy Tree
                 Element<ContainerButton>().Identifier(TreeItem.StyleIdentifierTreeButton)
                     .Class(TreeItem.StyleClassEvenRow)
