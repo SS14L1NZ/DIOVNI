@@ -1650,6 +1650,135 @@ namespace Content.Client.Stylesheets
                     .Prop(Label.StylePropertyFont, notoSans10)
                     .Prop(Label.StylePropertyFontColor, Color.FromHex("#333d3b")),
 
+                // ── PDA Hardware Housing ──────────────────────────────────
+
+                // Main body fill (warm beige plastic — angular texture, tintable)
+                Element<PanelContainer>().Class("PdaBodyPlastic")
+                    .Prop(PanelContainer.StylePropertyPanel, BaseAngleRect)
+                    .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#C4BFA8")),
+
+                // Left metal rail panel (cold steel)
+                Element<PanelContainer>().Class("PdaCaseMetalPanel")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#6B6864"),
+                        BorderColor = Color.FromHex("#555250"),
+                        BorderThickness = new Thickness(0, 0, 1, 0),
+                    }),
+
+                // Chamfer highlight (top of rail)
+                Element<PanelContainer>().Class("PdaCaseChamferLight")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#908C85"))),
+
+                // Rail horizontal bevel lines
+                Element<PanelContainer>().Class("PdaCaseRailBevel")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#807C76"))),
+
+                // Handle cutout shadow (offset darker layer)
+                Element<PanelContainer>().Class("PdaCaseHandleShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#2A2826"))),
+
+                // Handle cutout void (deep opening)
+                Element<PanelContainer>().Class("PdaCaseHandleVoid")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#131211"),
+                        BorderColor = Color.FromHex("#3D3B38"),
+                        BorderThickness = new Thickness(1),
+                    }),
+
+                // Speaker / vent groove marks
+                Element<PanelContainer>().Class("PdaCaseGroove")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#4A4845"))),
+
+                // Material junction seam — light side (highlight)
+                Element<PanelContainer>().Class("PdaCaseSeamHighlight")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#A8A49A"))),
+
+                // Material junction seam — dark side (shadow)
+                Element<PanelContainer>().Class("PdaCaseSeamShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#3A3836"))),
+
+                // Top ridge accent bar (metal strip)
+                Element<PanelContainer>().Class("PdaCaseTopRidge")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#9A9690"),
+                        BorderColor = Color.FromHex("#706C66"),
+                        BorderThickness = new Thickness(0, 0, 0, 2),
+                    }),
+
+                // Screen bezel outer edge
+                Element<PanelContainer>().Class("PdaCaseBezelEdge")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#2E2C28"))),
+
+                // Antenna tip (narrow metal rod)
+                Element<PanelContainer>().Class("PdaCaseAntennaTip")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#5A5854"),
+                        BorderColor = Color.FromHex("#444240"),
+                        BorderThickness = new Thickness(1, 0, 1, 0),
+                    }),
+
+                // Antenna base (wider mount)
+                Element<PanelContainer>().Class("PdaCaseAntennaBase")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#807C76"),
+                        BorderColor = Color.FromHex("#5A5854"),
+                        BorderThickness = new Thickness(0, 0, 0, 2),
+                    }),
+
+                // LED panel shadow layer
+                Element<PanelContainer>().Class("PdaCaseLedPanelShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#1A1816"))),
+
+                // LED panel body (smoky dark plastic)
+                Element<PanelContainer>().Class("PdaCaseLedPanelBody")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#2E2A26"),
+                        BorderColor = Color.FromHex("#3E3A36"),
+                        BorderThickness = new Thickness(1, 1, 0, 0),
+                    }),
+
+                // LED indicators
+                Element<PanelContainer>().Class("PdaCaseLedAmber")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#D48A10"))),
+                Element<PanelContainer>().Class("PdaCaseLedYellow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#B8AC1E"))),
+                Element<PanelContainer>().Class("PdaCaseLedGreen")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#42B842"))),
+                Element<PanelContainer>().Class("PdaCaseLedRed")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#B83030"))),
+
+                // Stylus slot shadow
+                Element<PanelContainer>().Class("PdaCaseStylusShadow")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#3A3836"))),
+
+                // Stylus slot body (recessed metal channel)
+                Element<PanelContainer>().Class("PdaCaseStylusBody")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#8A8478"),
+                        BorderColor = Color.FromHex("#6A6660"),
+                        BorderThickness = new Thickness(1, 1, 0, 0),
+                    }),
+
+                // Right wing background (slightly warmer tone — secondary plastic panel)
+                Element<PanelContainer>().Class("PdaCaseWingBg")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat(Color.FromHex("#BDB8A4"))),
+
+                // Bottom wing angular accent
+                Element<PanelContainer>().Class("PdaCaseWingAccent")
+                    .Prop(PanelContainer.StylePropertyPanel, new StyleBoxFlat
+                    {
+                        BackgroundColor = Color.FromHex("#AEA898"),
+                        BorderColor = Color.FromHex("#8A8680"),
+                        BorderThickness = new Thickness(0, 2, 0, 0),
+                    }),
+
                 // Fancy Tree
                 Element<ContainerButton>().Identifier(TreeItem.StyleIdentifierTreeButton)
                     .Class(TreeItem.StyleClassEvenRow)
