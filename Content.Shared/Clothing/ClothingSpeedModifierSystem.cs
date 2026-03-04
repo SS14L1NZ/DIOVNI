@@ -1,10 +1,13 @@
 using Content.Shared._DV.Clothing.Events; // DeltaV - Introduce ClothingSlowResistance to Species
+using Content.Shared.Administration.Managers;
 using Content.Shared.Examine;
+using Content.Shared.Ghost;
 using Content.Shared.Inventory;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Verbs;
+using Content.Shared._DV.ItemQuality;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
 using Robust.Shared.Utility;
@@ -17,6 +20,8 @@ public sealed class ClothingSpeedModifierSystem : EntitySystem
     [Dependency] private readonly ExamineSystemShared _examine = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _movementSpeed = default!;
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
+    [Dependency] private readonly ISharedAdminManager _admin = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
 
     public override void Initialize()
     {
@@ -78,6 +83,15 @@ public sealed class ClothingSpeedModifierSystem : EntitySystem
         if (!args.CanInteract || !args.CanAccess)
             return;
 
+        // DV: Speed modifier stats require appraiser glasses (admin ghosts exempt)
+        var isAdminGhost = HasComp<GhostComponent>(args.User) && _admin.IsAdmin(args.User);
+        if (!isAdminGhost)
+        {
+            if (!_inventory.TryGetSlotEntity(args.User, "eyes", out var eyes) ||
+                !HasComp<ItemAppraiserComponent>(eyes))
+                return;
+        }
+
         // DeltaV Start - Introduce ClothingSlowResistance to Species
         var ev = new ModifyClothingSlowdownEvent(component.WalkModifier, component.SprintModifier);
         RaiseLocalEvent(args.User, ref ev);
@@ -89,40 +103,70 @@ public sealed class ClothingSpeedModifierSystem : EntitySystem
         if (walkModifierPercentage == 0.0f && sprintModifierPercentage == 0.0f)
             return;
 
+        // DV: Word-based speed descriptions instead of exact percentages
         var msg = new FormattedMessage();
+        var avgEffect = Math.Max(MathF.Abs(walkModifierPercentage), MathF.Abs(sprintModifierPercentage));
+        var isSlowdown = walkModifierPercentage > 0 || sprintModifierPercentage > 0;
 
-        if (MathHelper.CloseTo(walkModifierPercentage, sprintModifierPercentage, 0.5f))
-        {
-            if (walkModifierPercentage < 0.0f)
-                msg.AddMarkupOrThrow(Loc.GetString("clothing-speed-increase-equal-examine", ("walkSpeed", (int) MathF.Abs(walkModifierPercentage)), ("runSpeed", (int) MathF.Abs(sprintModifierPercentage))));
-            else
-                msg.AddMarkupOrThrow(Loc.GetString("clothing-speed-decrease-equal-examine", ("walkSpeed", (int) walkModifierPercentage), ("runSpeed", (int) sprintModifierPercentage)));
-        }
-        else
-        {
-            if (sprintModifierPercentage < 0.0f)
-            {
-                msg.AddMarkupOrThrow(Loc.GetString("clothing-speed-increase-run-examine", ("runSpeed", (int) MathF.Abs(sprintModifierPercentage))));
-            }
-            else if (sprintModifierPercentage > 0.0f)
-            {
-                msg.AddMarkupOrThrow(Loc.GetString("clothing-speed-decrease-run-examine", ("runSpeed", (int) sprintModifierPercentage)));
-            }
-            if (walkModifierPercentage != 0.0f && sprintModifierPercentage != 0.0f)
-            {
-                msg.PushNewline();
-            }
-            if (walkModifierPercentage < 0.0f)
-            {
-                msg.AddMarkupOrThrow(Loc.GetString("clothing-speed-increase-walk-examine", ("walkSpeed", (int) MathF.Abs(walkModifierPercentage))));
-            }
-            else if (walkModifierPercentage > 0.0f)
-            {
-                msg.AddMarkupOrThrow(Loc.GetString("clothing-speed-decrease-walk-examine", ("walkSpeed", (int) walkModifierPercentage)));
-            }
-        }
+        var rating = GetSpeedRating(avgEffect, isSlowdown);
+        var ratingColor = GetSpeedColor(avgEffect, isSlowdown);
+        msg.AddMarkupOrThrow($"[color={ratingColor}]{Loc.GetString(rating)}[/color]");
 
         _examine.AddDetailedExamineVerb(args, component, msg, Loc.GetString("clothing-speed-examinable-verb-text"), "/Textures/Interface/VerbIcons/outfit.svg.192dpi.png", Loc.GetString("clothing-speed-examinable-verb-message"));
+    }
+
+    /// <summary>
+    /// DV: Returns a localization key for a word-based speed rating.
+    /// </summary>
+    private static string GetSpeedRating(float percentEffect, bool isSlowdown)
+    {
+        if (isSlowdown)
+        {
+            return percentEffect switch
+            {
+                >= 25f => "clothing-speed-rating-severe-slowdown",
+                >= 15f => "clothing-speed-rating-significant-slowdown",
+                >= 8f => "clothing-speed-rating-moderate-slowdown",
+                >= 3f => "clothing-speed-rating-light-slowdown",
+                _ => "clothing-speed-rating-negligible-slowdown",
+            };
+        }
+
+        return percentEffect switch
+        {
+            >= 25f => "clothing-speed-rating-major-boost",
+            >= 15f => "clothing-speed-rating-significant-boost",
+            >= 8f => "clothing-speed-rating-moderate-boost",
+            >= 3f => "clothing-speed-rating-light-boost",
+            _ => "clothing-speed-rating-negligible-boost",
+        };
+    }
+
+    /// <summary>
+    /// DV: Returns a color for the speed rating display.
+    /// </summary>
+    private static string GetSpeedColor(float percentEffect, bool isSlowdown)
+    {
+        if (isSlowdown)
+        {
+            return percentEffect switch
+            {
+                >= 25f => "#ff3030",   // bright red
+                >= 15f => "#ff6050",   // red-orange
+                >= 8f => "#ff8050",    // orange
+                >= 3f => "#ffaa50",    // yellow-orange
+                _ => "#ffcc50",        // yellow
+            };
+        }
+
+        return percentEffect switch
+        {
+            >= 25f => "#50ff50",   // bright green
+            >= 15f => "#80ff50",   // light green
+            >= 8f => "#b0ff50",    // yellow-green
+            >= 3f => "#d0ff50",    // lime
+            _ => "#e0ff80",        // pale lime
+        };
     }
 
     private void OnToggled(Entity<ClothingSpeedModifierComponent> ent, ref ItemToggledEvent args)

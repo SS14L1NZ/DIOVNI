@@ -3,6 +3,10 @@
   parent: BaseItem
   abstract: true
   components:
+  - type: ItemQuality
+    canExplodeOnWear: true
+    destructionLoot:
+      SheetSteel1: 2
   - type: Sprite
   - type: Item
     size: Large # Mono - Was Huge
@@ -55,6 +59,10 @@
   parent: BaseItem
   abstract: true
   components:
+  - type: ItemQuality
+    canExplodeOnWear: true
+    destructionLoot:
+      SheetSteel1: 2
   - type: Sprite
   - type: Item
     size: Huge

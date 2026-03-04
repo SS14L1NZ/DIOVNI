@@ -1,0 +1,17 @@
+# Weapon Repair Kit
+- type: entity
+  id: WeaponRepairKit
+  parent: BaseItem
+  name: weapon repair kit
+  description: A compact kit containing everything needed to restore a worn weapon. Requires steel and plasteel to use.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/Toolboxes/toolbox_red.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: WeaponRepairKit
+    repairAmount: 0.25
+    requiredSteel: 10
+    requiredPlasteel: 5
+    repairDelay: 5

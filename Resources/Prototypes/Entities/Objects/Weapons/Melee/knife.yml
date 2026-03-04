@@ -3,6 +3,10 @@
   id: BaseKnife
   abstract: true
   components:
+  - type: ItemQuality
+    canJam: false
+    destructionLoot:
+      SheetSteel1: 1
   - type: Tag
     tags:
     - Knife

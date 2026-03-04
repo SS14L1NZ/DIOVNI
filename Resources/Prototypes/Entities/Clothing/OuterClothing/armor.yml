@@ -13,6 +13,11 @@
     sprite: Clothing/OuterClothing/Armor/security.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/security.rsi
+  - type: ItemQuality
+    canJam: false
+    destructionLoot:
+      SheetSteel1: 1
+      MaterialCloth1: 1
   - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
     modifiers:
       coefficients:

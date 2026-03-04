@@ -5,6 +5,10 @@
   description: Spray and pray.
   abstract: true
   components:
+  - type: ItemQuality
+    canExplodeOnWear: true
+    destructionLoot:
+      SheetSteel1: 3
   - type: Sprite
   - type: Item
     size: Ginormous

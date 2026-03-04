@@ -1,0 +1,16 @@
+# Appraiser Glasses - shows exact quality and armor numbers
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesGlassesAppraiser
+  name: appraiser glasses
+  description: Specialized glasses with a built-in micro-scanner that displays precise quality and wear data for equipment.
+  components:
+  - type: Sprite
+    sprite: Clothing/Eyes/Hud/diag.rsi
+  - type: Clothing
+    sprite: Clothing/Eyes/Hud/diag.rsi
+  - type: ItemAppraiser
+  - type: Tag
+    tags:
+    - HamsterWearable
+    - WhitelistChameleon

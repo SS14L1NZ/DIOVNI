@@ -4,6 +4,11 @@
   id: Sledgehammer
   description: The perfect tool for wanton carnage.
   components:
+  - type: ItemQuality
+    canJam: false
+    destructionLoot:
+      PartRodMetal1: 1
+      SheetSteel1: 1
   - type: Sprite
     sprite: Objects/Weapons/Melee/sledgehammer.rsi
     state: icon

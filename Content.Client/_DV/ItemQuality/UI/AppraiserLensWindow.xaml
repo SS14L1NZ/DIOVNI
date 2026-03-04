@@ -1,0 +1,70 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'appraiser-lens-title'}"
+                      MinSize="380 520"
+                      MaxSize="460 720"
+                      SetSize="380 520">
+    <BoxContainer Orientation="Vertical" Margin="8">
+        <!-- Target name with styled header -->
+        <PanelContainer StyleClasses="BackgroundDark" Margin="0 0 0 4">
+            <BoxContainer Orientation="Vertical" Margin="6 4">
+                <Label Name="TargetLabel"
+                       HorizontalAlignment="Center"
+                       StyleClasses="LabelHeadingBigger" />
+                <Label Name="PhaseLabel"
+                       HorizontalAlignment="Center"
+                       Margin="0 2 0 0" />
+            </BoxContainer>
+        </PanelContainer>
+        <!-- Dial row -->
+        <BoxContainer Name="DialsContainer"
+                      Orientation="Horizontal"
+                      HorizontalAlignment="Center"
+                      Margin="2 6" />
+        <!-- Signal strength with label -->
+        <PanelContainer StyleClasses="BackgroundDark" Margin="0 2">
+            <BoxContainer Orientation="Vertical" Margin="6 4">
+                <BoxContainer Orientation="Horizontal"
+                              HorizontalAlignment="Center"
+                              Margin="0 0 0 2">
+                    <Label Name="SignalLabel"
+                           Text="{Loc 'appraiser-lens-signal'}"
+                           Margin="0 0 6 0" />
+                    <Label Name="SignalPercent"
+                           Text="0%"
+                           Margin="0 0 0 0" />
+                </BoxContainer>
+                <ProgressBar Name="SignalBar"
+                             HorizontalExpand="True"
+                             MinSize="0 14"
+                             MinValue="0"
+                             MaxValue="100"
+                             Value="0" />
+            </BoxContainer>
+        </PanelContainer>
+        <!-- Timing ring area (hidden until Phase 2) -->
+        <Control Name="TimingRingContainer"
+                 HorizontalAlignment="Center"
+                 MinSize="170 170"
+                 Margin="4 6"
+                 Visible="False" />
+        <!-- Status -->
+        <Label Name="StatusLabel"
+               HorizontalAlignment="Center"
+               Margin="0 2 0 2" />
+        <!-- Accuracy display (hidden until Phase 2) -->
+        <Label Name="AccuracyLabel"
+               HorizontalAlignment="Center"
+               Margin="0 2 0 2"
+               Visible="False" />
+        <!-- Results -->
+        <PanelContainer Name="ResultPanel"
+                        StyleClasses="BackgroundDark"
+                        Margin="4"
+                        Visible="False">
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" MinSize="0 80">
+                <RichTextLabel Name="ResultLabel" Margin="6" />
+            </ScrollContainer>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

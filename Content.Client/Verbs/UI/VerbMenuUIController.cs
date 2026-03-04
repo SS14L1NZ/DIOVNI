@@ -207,17 +207,23 @@ namespace Content.Client.Verbs.UI
         /// </summary>
         public void AddServerVerbs(List<Verb>? verbs, ContextMenuPopup popup)
         {
-            popup.MenuBody.DisposeAllChildren();
-
             // Verbs may be null if the server does not think we can see the target entity. This **should** not happen.
             if (verbs == null)
             {
+                popup.MenuBody.DisposeAllChildren();
                 // remove "waiting for server..." and inform user that something went wrong.
                 _context.AddElement(popup, new ContextMenuElement(Loc.GetString("verb-system-null-server-response")));
                 return;
             }
 
+            // Only rebuild the menu if the server actually adds new verbs
+            var oldCount = CurrentVerbs.Count;
             CurrentVerbs.UnionWith(verbs);
+
+            if (CurrentVerbs.Count == oldCount)
+                return; // No new verbs — skip rebuild to avoid flicker
+
+            popup.MenuBody.DisposeAllChildren();
             FillVerbPopup(popup);
         }
 

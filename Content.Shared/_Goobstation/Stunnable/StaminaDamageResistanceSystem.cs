@@ -20,10 +20,48 @@ public sealed partial class StaminaDamageResistanceSystem : EntitySystem
     }
     private void OnExamine(Entity<StaminaDamageResistanceComponent> ent, ref ArmorExamineEvent args)
     {
+        // Mono - fix floating point error stuff guh
+        var value = MathF.Round((1f - ent.Comp.Coefficient) * 100, 1);
+
+        if (value == 0)
+            return;
+
+        // DV: Word-based stamina resistance description
+        var rating = GetStaminaRating(value);
+        var ratingColor = GetStaminaColor(value);
 
         args.Msg.PushNewline();
-        // Mono - fix floating point error stuff guh
-        args.Msg.AddMarkupOrThrow(Loc.GetString("armor-examine-stamina",
-            ("num", MathF.Round((1f - ent.Comp.Coefficient) * 100, 1)))); // behold my line of 4 )
+        args.Msg.AddMarkupOrThrow(Loc.GetString("armor-stamina-description",
+            ("rating", $"[color={ratingColor}]{Loc.GetString(rating)}[/color]")));
+    }
+
+    /// <summary>
+    /// DV: Returns a localization key for a word-based stamina resistance rating.
+    /// </summary>
+    private static string GetStaminaRating(float protectionPercent)
+    {
+        return protectionPercent switch
+        {
+            >= 50f => "stamina-rating-exceptional",
+            >= 35f => "stamina-rating-good",
+            >= 20f => "stamina-rating-moderate",
+            >= 10f => "stamina-rating-weak",
+            _ => "stamina-rating-negligible",
+        };
+    }
+
+    /// <summary>
+    /// DV: Returns a color for the stamina resistance rating.
+    /// </summary>
+    private static string GetStaminaColor(float protectionPercent)
+    {
+        return protectionPercent switch
+        {
+            >= 50f => "#50ffff",
+            >= 35f => "#80ffcc",
+            >= 20f => "#aaffaa",
+            >= 10f => "#ccff80",
+            _ => "#ffff80",
+        };
     }
 }

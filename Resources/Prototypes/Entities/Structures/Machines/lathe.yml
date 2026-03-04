@@ -450,6 +450,7 @@
   - type: EmagLatheRecipes
     emagStaticPacks:
     - StaticAmmoRecipePack
+    - DVItemQualityStatic # DV
   - type: BlueprintReceiver
     whitelist:
       tags:
@@ -764,6 +765,7 @@
     - SecurityPracticeStatic
     - StaticAmmoRecipePack
     - SecurityWeaponsStatic
+    - DVItemQualityStatic # DV
     dynamicPacks:
     - SecurityEquipment
     - SecurityExplosives

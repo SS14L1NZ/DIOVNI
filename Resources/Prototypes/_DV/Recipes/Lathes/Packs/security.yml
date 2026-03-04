@@ -1,0 +1,8 @@
+# DV - Security lathe recipe packs for Item Quality system
+
+## Static - available without research
+- type: latheRecipePack
+  id: DVItemQualityStatic
+  recipes:
+  - WeaponRepairKit
+  - ClothingEyesGlassesAppraiser

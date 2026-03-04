@@ -1,9 +1,13 @@
+using Content.Shared.Administration.Managers;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Examine;
 using Content.Shared.FixedPoint;
+using Content.Shared.Ghost;
+using Content.Shared.Inventory;
 using Content.Shared.Verbs;
+using Content.Shared._DV.ItemQuality;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -13,6 +17,8 @@ public sealed class DamageExamineSystem : EntitySystem
 {
     [Dependency] private readonly ExamineSystemShared _examine = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly ISharedAdminManager _admin = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
 
     public override void Initialize()
     {
@@ -25,6 +31,15 @@ public sealed class DamageExamineSystem : EntitySystem
     {
         if (!args.CanInteract || !args.CanAccess)
             return;
+
+        // DV: Detailed damage stats require appraiser glasses (admin ghosts exempt)
+        var isAdminGhost = HasComp<GhostComponent>(args.User) && _admin.IsAdmin(args.User);
+        if (!isAdminGhost)
+        {
+            if (!_inventory.TryGetSlotEntity(args.User, "eyes", out var eyes) ||
+                !HasComp<ItemAppraiserComponent>(eyes))
+                return;
+        }
 
         var ev = new DamageExamineEvent(new FormattedMessage(), args.User);
         RaiseLocalEvent(uid, ref ev);

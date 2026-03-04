@@ -39,3 +39,21 @@
       sprite: Nyanotrasen/Objects/Specific/Mail/mail.rsi
       state: icon
     readonly: true # Frontier
+
+- type: entity
+  parent: NFBasePDACartridge
+  id: AppraiserArchiveCartridge
+  name: appraiser archive cartridge
+  description: A PDA program that records quality scan data from appraiser glasses. Stores the last 15 scanned items with up to 5 favorites.
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/cartridge.rsi
+    state: cart-y
+  - type: UIFragment
+    ui: !type:AppraiserArchiveUi
+  - type: AppraiserArchiveCartridge
+  - type: Cartridge
+    programName: appraiser-archive-program-name
+    icon:
+      sprite: Objects/Devices/cartridge.rsi
+      state: cart-y

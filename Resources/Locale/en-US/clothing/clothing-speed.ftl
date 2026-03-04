@@ -7,3 +7,15 @@ clothing-speed-increase-run-examine = This increases your running speed by [colo
 clothing-speed-decrease-run-examine = This decreases your running speed by [color=yellow]{$runSpeed}%[/color].
 clothing-speed-increase-walk-examine = This increases your walking speed by [color=yellow]{$walkSpeed}%[/color].
 clothing-speed-decrease-walk-examine = This decreases your walking speed by [color=yellow]{$walkSpeed}%[/color].
+
+# DV: Word-based speed ratings
+clothing-speed-rating-severe-slowdown = Severe speed reduction
+clothing-speed-rating-significant-slowdown = Significant speed reduction
+clothing-speed-rating-moderate-slowdown = Moderate speed reduction
+clothing-speed-rating-light-slowdown = Slight speed reduction
+clothing-speed-rating-negligible-slowdown = Negligible speed reduction
+clothing-speed-rating-major-boost = Major speed boost
+clothing-speed-rating-significant-boost = Significant speed boost
+clothing-speed-rating-moderate-boost = Moderate speed boost
+clothing-speed-rating-light-boost = Slight speed boost
+clothing-speed-rating-negligible-boost = Negligible speed boost

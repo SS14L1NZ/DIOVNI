@@ -1,0 +1,18 @@
+<cartridges:AppraiserArchiveUiFragment xmlns:cartridges="clr-namespace:Content.Client._DV.ItemQuality.UI"
+                                           xmlns="https://spacestation14.io" Margin="1 0 2 0"
+                                           RectClipContent="True">
+    <PanelContainer StyleClasses="BackgroundDark" />
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Horizontal" Margin="4 4 4 2">
+            <Label Name="HeaderLabel" Text="{Loc 'appraiser-archive-header'}"
+                   HorizontalExpand="True" StyleClasses="LabelHeadingBigger" />
+            <Button Name="ClearButton" Text="{Loc 'appraiser-archive-clear'}"
+                    StyleClasses="OpenBoth" SetWidth="80" />
+        </BoxContainer>
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Orientation="Vertical" Name="EntryContainer"
+                          HorizontalExpand="True" VerticalExpand="True"
+                          RectClipContent="True" />
+        </ScrollContainer>
+    </BoxContainer>
+</cartridges:AppraiserArchiveUiFragment>

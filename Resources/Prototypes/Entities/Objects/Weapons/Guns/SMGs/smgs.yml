@@ -5,6 +5,10 @@
   description: A rooty tooty point and shooty.
   abstract: true
   components:
+  - type: ItemQuality
+    canExplodeOnWear: true
+    destructionLoot:
+      SheetSteel1: 2
   - type: Sprite
   - type: Item
     size: Large

@@ -199,6 +199,7 @@
     - StaticAmmoRecipePack
     - MonoRestraintsStatic # Mono
     - RoundstartShipgunAmmo # Mono
+    - DVItemQualityStatic # DV
     dynamicPacks:
     - NFMercenaryTechfabDeprecated
     - DynamicAmmoRecipePack

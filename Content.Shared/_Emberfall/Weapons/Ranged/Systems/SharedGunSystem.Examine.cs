@@ -1,29 +1,42 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Shared.Administration.Managers;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Examine;
+using Content.Shared.Ghost;
+using Content.Shared.Inventory;
 using Content.Shared.Verbs;
 using Content.Shared.Weapons.Ranged.Components;
+using Content.Shared._DV.ItemQuality;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Weapons.Ranged.Systems;
 
 public abstract partial class SharedGunSystem
 {
-    [Dependency] private readonly ExamineSystemShared _examine = default!;
+    [Dependency] private readonly ISharedAdminManager _adminExamine = default!;
 
     private void OnGunVerbExamine(Entity<GunComponent> ent, ref GetVerbsEvent<ExamineVerb> args)
     {
         if (!args.CanInteract || !args.CanAccess)
             return;
 
+        // DV: Detailed gun stats require appraiser glasses (admin ghosts exempt)
+        var isAdminGhost = HasComp<GhostComponent>(args.User) && _adminExamine.IsAdmin(args.User);
+        if (!isAdminGhost)
+        {
+            if (!_inventory.TryGetSlotEntity(args.User, "eyes", out var eyes) ||
+                !HasComp<ItemAppraiserComponent>(eyes))
+                return;
+        }
+
         var examineMarkup = GetGunExamine(ent);
 
         var ev = new GunExamineEvent(examineMarkup);
         RaiseLocalEvent(ent, ref ev);
 
-        _examine.AddDetailedExamineVerb(args,
+        Examine.AddDetailedExamineVerb(args,
             ent.Comp,
             examineMarkup,
             Loc.GetString("gun-examinable-verb-text"),
@@ -40,28 +53,28 @@ public abstract partial class SharedGunSystem
         msg.PushNewline();
         msg.AddMarkupOrThrow(Loc.GetString("gun-examine-recoil",
             ("color", FireRateExamineColor),
-            ("value", MathF.Round((float)ent.Comp.AngleIncreaseModified.Degrees, 2))
+            ("value", MathF.Round((float)ent.Comp.AngleIncreaseModified.Degrees, 1))
         ));
 
         // Stability (AngleDecay)
         msg.PushNewline();
         msg.AddMarkupOrThrow(Loc.GetString("gun-examine-stability",
             ("color", FireRateExamineColor),
-            ("value", MathF.Round((float)ent.Comp.AngleDecayModified.Degrees, 2))
+            ("value", MathF.Round((float)ent.Comp.AngleDecayModified.Degrees, 1))
         ));
 
         // Max Angle
         msg.PushNewline();
         msg.AddMarkupOrThrow(Loc.GetString("gun-examine-max-angle",
             ("color", FireRateExamineColor),
-            ("value", MathF.Round((float)ent.Comp.MaxAngleModified.Degrees, 2))
+            ("value", MathF.Round((float)ent.Comp.MaxAngleModified.Degrees, 1))
         ));
 
         // Min Angle
         msg.PushNewline();
         msg.AddMarkupOrThrow(Loc.GetString("gun-examine-min-angle",
             ("color", FireRateExamineColor),
-            ("value", MathF.Round((float)ent.Comp.MinAngleModified.Degrees, 2))
+            ("value", MathF.Round((float)ent.Comp.MinAngleModified.Degrees, 1))
         ));
 
         // Fire Rate (converted from RPS to RPM)

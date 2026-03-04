@@ -22,8 +22,43 @@ public abstract class SharedExplosionSystem : EntitySystem
         if (value == 0)
             return;
 
+        // DV: Word-based explosion resistance description
+        var rating = GetExplosionRating(value);
+        var ratingColor = GetExplosionColor(value);
+
         args.Msg.PushNewline();
-        args.Msg.AddMarkupOrThrow(Loc.GetString(ent.Comp.Examine, ("value", value)));
+        args.Msg.AddMarkupOrThrow(Loc.GetString("explosion-resistance-description",
+            ("rating", $"[color={ratingColor}]{Loc.GetString(rating)}[/color]")));
+    }
+
+    /// <summary>
+    /// DV: Returns a localization key for a word-based explosion resistance rating.
+    /// </summary>
+    private static string GetExplosionRating(float protectionPercent)
+    {
+        return protectionPercent switch
+        {
+            >= 50f => "explosion-rating-exceptional",
+            >= 35f => "explosion-rating-good",
+            >= 20f => "explosion-rating-moderate",
+            >= 10f => "explosion-rating-weak",
+            _ => "explosion-rating-negligible",
+        };
+    }
+
+    /// <summary>
+    /// DV: Returns a color for the explosion resistance rating.
+    /// </summary>
+    private static string GetExplosionColor(float protectionPercent)
+    {
+        return protectionPercent switch
+        {
+            >= 50f => "#50ff50",
+            >= 35f => "#b0ff50",
+            >= 20f => "#ffff50",
+            >= 10f => "#ff8050",
+            _ => "#ff5050",
+        };
     }
 
     /// <summary>
